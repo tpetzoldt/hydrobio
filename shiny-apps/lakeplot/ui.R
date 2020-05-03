@@ -1,4 +1,7 @@
 library(rhandsontable)
+library(plotly)
+library(dplyr)
+library(reshape2)
 
 shinyUI(fluidPage(
   headerPanel("Lake Profile Plot"),
@@ -24,11 +27,11 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Multi Parameter Probe",
-          plotOutput("multiprobe"),
+          plotlyOutput("multiprobe"),
           #verbatimTextOutput("summary")
         ),
         tabPanel("Light Sensor",
-          plotOutput("light")#,
+          plotlyOutput("light")#,
           #verbatimTextOutput("summary")
         ),
         tabPanel("Info",
