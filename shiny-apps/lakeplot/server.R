@@ -1,4 +1,9 @@
 library("rhandsontable")
+library(plotly)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(gridExtra)
 
 lastClrBtn <- 0
 
@@ -37,68 +42,67 @@ shinyServer(function(input, output, session) {
       #hot_col("Oxygen", type="numeric")
   })
 
-  output$multiprobe <- renderPlot({
+  output$multiprobe <- renderPlotly({
     input$runBtn
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
+        df2 <- melt(DF, id.vars = "Depth")
+        df2 <- merge(df2, data.frame(variable = c("Temp", "Oxygen", "pH", "Cond", "Light"),
+                                     plot = c(1, 1, 2, 3, 4)))
+        dfp1 <- subset(df2, df2$variable %in% c("Temp", "Oxygen", "pH", "Cond"))
+
         print(str(DF))
 
-        par(mfrow=c(1, 3), las=1)
-        columns <- c("Temp", "Oxygen")
-
-        plot(0,0, ylim = rev(na.omit(range(DF$Depth))), xlim=range(na.omit(as.vector(DF[columns]))),
-             type = "n", ylab="z (m)", xlab=paste(columns, collapse=", "))
-
-
-        lapply(1:length(columns), function(i) {
-          lines(DF[, columns[i]], DF$Depth, col=i)
-        })
-        legend("bottomright", legend=columns, col=1:length(columns), lty=1)
-
-        plot(DF$pH, DF$Depth, xlab="pH", ylab="z (m)",
-             xlim = range(c(na.omit(DF$pH), 6.5, 7.5)),
-             ylim=rev(na.omit(range(DF$Depth))), type="l")
-        abline(v=7, lty="dashed", col="grey")
-
-        plot(DF$Cond, DF$Depth, xlab="Cond", ylab="z (m)",
-             xlim = range(c(na.omit(DF$Cond))),
-             ylim=rev(na.omit(range(DF$Depth))), type="l")
+        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
+          geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
+          theme(legend.position="bottom") + xlab("Tiefe (m)")  +
+          scale_x_continuous(trans = "reverse")
+      
+        ggplotly(p1)
+        
       } else {
         # placeholder, do nothing
       }
     })
   })
 
-  output$light <- renderPlot({
+  output$light <- renderPlotly({
     input$runBtn
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
+        df2 <- melt(DF, id.vars = "Depth")
+        dfp1 <- subset(df2, df2$variable %in% c("Light"))
+        dfp1 <- rbind(dfp1, data.frame(variable = "log(Light)",
+                                       value = log(dfp1$value),
+                                       Depth = dfp1$Depth))
+        dfp1 <- merge(dfp1, data.frame(variable = c("Light", "log(Light)"),
+                                     plot = c(1, 2)
+                                     ))
+        
+        print(str(DF))
         #analysis <- get_analysis()
 
-        par(mfrow=c(1, 2), las=1)
-        plot(DF$Light, DF$Depth, xlab="Light", ylab="z (m)",
-             xlim = range(c(na.omit(DF$Light))),
-             ylim=rev(na.omit(range(DF$Depth))), type="l")
+        # linear fit
+          m <- lm(log(DF$Light) ~ DF$Depth)
+          eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
+                       round(m$coefficients[2],2), " * x")
 
-        plot(log(DF$Light), DF$Depth, xlab="Light", ylab="z (m)",
-             xlim = log(c(0.1, 100)),
-             ylim=rev(na.omit(range(DF$Depth))), type="p", axes=FALSE)
+        
+        
+        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
+          geom_line(aes(linetype = variable)) + scale_linetype_manual(values=c("solid", "blank")) +
+          geom_point() + coord_flip() + facet_grid(.~plot, scales = "free") +
+          theme(legend.position="bottom") + xlab("Tiefe (m)")  +
+          scale_x_continuous(trans = "reverse") +
+          geom_smooth(data = subset(dfp1, variable =="log(Light)"), method = "lm") +
+          geom_text(data = data.frame(Depth = 1, value = 1, variable = "log(Light)"),
+                    parse = TRUE, label = c("", eqt))
+        
 
-        axis(2)
-        xtic <- 10^(-2:2)
-        axis(1, label=xtic, at=log(xtic))
-        box()
-
-        m <- lm(log(Light) ~ Depth, data=DF)
-
-        x <- range(DF$Depth)
-        y <- coef(m)[1] + coef(m)[2] * x
-
-        lines(y, x)
-        ab <- round(coef(m), 2)
-        legend("topleft", lty=1, paste("I =", ab[1], ab[2], "* z"))
+        ggplotly(p1)
+        
 
       } else {
         # placeholder, do nothing
