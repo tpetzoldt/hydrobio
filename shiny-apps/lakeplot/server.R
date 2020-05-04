@@ -24,23 +24,10 @@ shinyServer(function(input, output, session) {
     # do some calculations
   })
 
-  #observeEvent(input$addRows, {
-  #  cat("test", input$addRows, "\n")
-  #})
-
-  #new_df <- eventReactive(input$addRows, {
-  #  cat("event")
-
-  #  nm <- names(DF)
-  #  DF2 <- as.data.frame(matrix(NA, nrow=10, ncol=length(nm)))
-  #  colnames(DF2) <- nm
-  #  rbind(DF, DF2)
-  #})
-
   output$hot <- renderRHandsontable({
     if(input$clrBtn > lastClrBtn) {
       lastClrBtn <<- input$clrBtn
-      print(lastClrBtn)
+      #print(lastClrBtn)
       DF <- hot_to_r(input$hot)
       DF[,] <- as.numeric(NA) # as.numeric to avoid boolean
 
@@ -54,7 +41,7 @@ shinyServer(function(input, output, session) {
 
     if (input$addRows > lastAddRows) {
       lastAddRows <<- input$addRows
-      print(lastAddRows)
+      #print(lastAddRows)
 
       DF <- hot_to_r(input$hot)
       nm <- names(DF)
@@ -82,7 +69,7 @@ shinyServer(function(input, output, session) {
                                      plot = c(1, 1, 2, 3, 4)))
         dfp1 <- subset(df2, df2$variable %in% c("Temp", "Oxygen", "pH", "Cond"))
 
-        print(str(DF))
+        #print(str(DF))
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
           geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
@@ -105,7 +92,8 @@ shinyServer(function(input, output, session) {
 
 
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -159,7 +147,8 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -226,7 +215,9 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
