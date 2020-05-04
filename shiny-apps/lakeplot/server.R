@@ -46,6 +46,7 @@ shinyServer(function(input, output, session) {
     input$runBtn
     input$thermo
     input$`10Ciso`
+
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -84,6 +85,9 @@ shinyServer(function(input, output, session) {
 
   output$light <- renderPlotly({
     input$runBtn
+    input$thermo
+    input$`10Ciso`
+
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -100,9 +104,9 @@ shinyServer(function(input, output, session) {
         #analysis <- get_analysis()
 
         # linear fit
-          m <- lm(log(DF$Light) ~ DF$Depth)
-          eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
-                       round(m$coefficients[2],2), " * x")
+         m <- lm(log(DF$Light) ~ DF$Depth)
+         eqt <- paste0("y = ", round(m$coefficients[1], 2), " ",
+                       round(m$coefficients[2], 2), " * x")
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_line(aes(linetype = variable)) + scale_linetype_manual(values=c("solid", "blank")) +
@@ -112,6 +116,20 @@ shinyServer(function(input, output, session) {
           geom_smooth(data = subset(dfp1, variable =="log(Light)"), method = "lm") +
           geom_text(data = data.frame(Depth = 1, value = 1, variable = "log(Light)"),
                     parse = TRUE, label = c("", eqt))
+
+        if(input$`10Ciso`) {
+          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+
+          p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C Isotherme"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+
+        if(input$thermo) {
+          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+
+          p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "Thermocline"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
 
         ggplotly(p1)
       } else {
