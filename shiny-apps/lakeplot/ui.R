@@ -20,8 +20,9 @@ shinyUI(fluidPage(
       #column(3, numericInput("inpSd", label = "SD", value = NA)),
       #column(3, numericInput("inpK", label = "K", value = NA))
       #),
-      checkboxInput("10Ciso", "plot 10°C Isotherme", FALSE),
-      checkboxInput("thermo", "plot Thermocline", FALSE),
+      checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
+      checkboxInput("thermo", "plot thermocline", FALSE),
+      checkboxInput("light1p", "plot 1% light depth", FALSE),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")
 
@@ -33,7 +34,8 @@ shinyUI(fluidPage(
           #verbatimTextOutput("summary")
         ),
         tabPanel("Light Sensor",
-          plotlyOutput("light")#,
+          plotlyOutput("light1"),
+          plotlyOutput("light2")#,
           #verbatimTextOutput("summary")
         ),
         tabPanel("Info",
