@@ -46,6 +46,7 @@ shinyServer(function(input, output, session) {
     input$runBtn
     input$thermo
     input$`10Ciso`
+    input$light1p
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -71,6 +72,12 @@ shinyServer(function(input, output, session) {
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
         
+        if(input$light1p) {
+          z_light <- approx(DF$Light/max(DF$Light), DF$Depth, 0.01)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% Licht Oberfläche"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
         
         if(input$thermo) {
           z_thermo <- thermo.depth(DF$Temp, DF$Depth)
@@ -86,40 +93,53 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  output$light <- renderPlotly({
+  output$light1 <- renderPlotly({
     input$runBtn
+    input$light1p
+    input$thermo
+    input$`10Ciso`
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
         df2 <- melt(DF, id.vars = "Depth")
         dfp1 <- subset(df2, df2$variable %in% c("Light"))
-        dfp1 <- rbind(dfp1, data.frame(variable = "log(Light)",
-                                       value = log(dfp1$value),
-                                       Depth = dfp1$Depth))
-        dfp1 <- merge(dfp1, data.frame(variable = c("Light", "log(Light)"),
-                                     plot = c(1, 2)
-                                     ))
-        
+        if(input$light1p) {
+         dfp1$value <- dfp1$value/max(dfp1$value) 
+        }
         print(str(DF))
         #analysis <- get_analysis()
 
-        # linear fit
-          m <- lm(log(DF$Light) ~ DF$Depth)
-          eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
-                       round(m$coefficients[2],2), " * x")
-
-        
         
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
-          geom_line(aes(linetype = variable)) + scale_linetype_manual(values=c("solid", "blank")) +
-          geom_point() + coord_flip() + facet_grid(.~plot, scales = "free") +
+          geom_line() + geom_point() + coord_flip() + 
           theme(legend.position="bottom") + xlab("Tiefe (m)")  +
-          scale_x_continuous(trans = "reverse") +
-          geom_smooth(data = subset(dfp1, variable =="log(Light)"), method = "lm") +
-          geom_text(data = data.frame(Depth = 1, value = 1, variable = "log(Light)"),
-                    parse = TRUE, label = c("", eqt))
+          scale_x_continuous(trans = "reverse") + 
+          ggtitle(ifelse(input$light1p, "Licht relativ", "Licht"))
+         
         
 
+        if(input$`10Ciso`) {
+          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C Isotherme"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$light1p) {
+          z_light <- approx(DF$Light/max(DF$Light), DF$Depth, 0.01)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% Licht Oberfläche"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$thermo) {
+          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "Thermocline"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        
         ggplotly(p1)
         
 
@@ -129,5 +149,67 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  output$light2 <- renderPlotly({
+    input$runBtn
+    input$light1p
+    input$thermo
+    input$`10Ciso`
+    isolate({
+      if (!is.null(input$hot)) {
+        DF <- hot_to_r(input$hot)
+        df2 <- melt(DF, id.vars = "Depth")
+        dfp1 <- subset(df2, df2$variable %in% c("Light"))
+        dfp1$value <- log10(dfp1$value)
+        
+        print(str(DF))
+        #analysis <- get_analysis()
+        
+        # linear fit
+        m <- lm(log(DF$Light) ~ DF$Depth)
+        eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
+                      round(m$coefficients[2],2), " * x")
+        
+        
+        
+        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
+          geom_point() + coord_flip() + 
+          theme(legend.position="bottom") + xlab("Tiefe (m)")  +
+          scale_x_continuous(trans = "reverse") +
+          geom_smooth(method = "lm", aes(col = "linear fit")) +
+          geom_text(data = data.frame(Depth = 1, value = 0.1, variable = "linear fit"),
+                    parse = TRUE, label = eqt) + ggtitle("log Licht mit linearem fit")
+        
+        
+        if(input$`10Ciso`) {
+          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C Isotherme"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$light1p) {
+          z_light <- approx(DF$Light/max(DF$Light), DF$Depth, 0.01)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% Licht Oberfläche"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$thermo) {
+          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "Thermocline"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        ggplotly(p1)
+        
+        
+      } else {
+        # placeholder, do nothing
+      }
+    })
+  })
+  
+  
 })
 
