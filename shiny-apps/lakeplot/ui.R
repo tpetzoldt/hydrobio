@@ -1,8 +1,8 @@
-library(rhandsontable)
-library(plotly)
-library(dplyr)
-library(rLakeAnalyzer)
-library(reshape2)
+library("rhandsontable")
+library("plotly")
+library("dplyr")
+library("rLakeAnalyzer")
+library("reshape2")
 
 shinyUI(fluidPage(
   headerPanel("Lake Profile Plot"),
@@ -20,9 +20,9 @@ shinyUI(fluidPage(
       #column(3, numericInput("inpSd", label = "SD", value = NA)),
       #column(3, numericInput("inpK", label = "K", value = NA))
       #),
-      checkboxInput("10Ciso", "plot 10°C Isotherme", FALSE),
-      checkboxInput("thermo", "plot Thermocline", FALSE),
-      checkboxInput("light1p", "plot Tiefe in der noch 1% Licht", FALSE),
+      checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
+      checkboxInput("thermo", "plot thermocline", FALSE),
+      checkboxInput("light1p", "plot 1% light depth", FALSE),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")
 
