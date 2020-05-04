@@ -20,6 +20,12 @@ DF <- data.frame(Depth=0:10,
 
 shinyServer(function(input, output, session) {
 
+  get_eps <- reactive({
+    DF <- hot_to_r(input$hot)
+    m <- lm(log(DF$Light) ~ DF$Depth)
+    coef(m)[2]
+  })
+
   get_analysis <- reactive({
     # do some calculations
   })
@@ -84,7 +90,9 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -121,15 +129,13 @@ shinyServer(function(input, output, session) {
         if(input$light1p) {
          dfp1$value <- dfp1$value/max(dfp1$value, na.rm = TRUE)
         }
-        print(str(DF))
-
+        #print(str(DF))
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_line() + geom_point() + coord_flip() +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
           scale_x_continuous(trans = "reverse") +
           ggtitle(ifelse(input$light1p, "Light relative", "Light"))
-
 
 
         if(input$`10Ciso`) {
@@ -140,7 +146,9 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -181,15 +189,14 @@ shinyServer(function(input, output, session) {
         dfp1 <- subset(df2, df2$variable %in% c("Light"))
         dfp1$value <- log10(dfp1$value)
 
-        print(str(DF))
+        #print(str(DF))
         #analysis <- get_analysis()
 
         # linear fit
         m <- lm(log(DF$Light) ~ DF$Depth)
-        eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
-                      round(m$coefficients[2],2), " * x")
-
-
+        #eps <- coef(m)[2]
+        eqt <- paste0("y = ", round(coef(m)[1], 2), " ",
+                              round(coef(m)[2], 2), " * x")
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_point() + coord_flip() +
@@ -208,7 +215,9 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
