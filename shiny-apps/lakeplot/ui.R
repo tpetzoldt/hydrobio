@@ -1,6 +1,7 @@
 library(rhandsontable)
 library(plotly)
 library(dplyr)
+library(rLakeAnalyzer)
 library(reshape2)
 
 shinyUI(fluidPage(
@@ -19,7 +20,8 @@ shinyUI(fluidPage(
       #column(3, numericInput("inpSd", label = "SD", value = NA)),
       #column(3, numericInput("inpK", label = "K", value = NA))
       #),
-      #checkboxInput("bxAutomatic", "Automatic", TRUE),
+      checkboxInput("10Ciso", "plot 10°C Isotherme", FALSE),
+      checkboxInput("thermo", "plot Thermocline", FALSE),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")
 
