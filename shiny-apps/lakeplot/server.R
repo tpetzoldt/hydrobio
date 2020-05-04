@@ -1,9 +1,9 @@
 library("rhandsontable")
-library(plotly)
-library(dplyr)
-library(reshape2)
-library(ggplot2)
-library(gridExtra)
+library("plotly")
+library("dplyr")
+library("reshape2")
+library("ggplot2")
+library("gridExtra")
 
 lastClrBtn <- 0
 
@@ -56,30 +56,26 @@ shinyServer(function(input, output, session) {
 
         print(str(DF))
 
-
-        
-        
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
           geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
           theme(legend.position="bottom") + xlab("Tiefe (m)")  +
           scale_x_continuous(trans = "reverse")
-      
+
         if(input$`10Ciso`) {
           z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-          
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C Isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
-        
+
         if(input$thermo) {
           z_thermo <- thermo.depth(DF$Temp, DF$Depth)
-          
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "Thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
         ggplotly(p1)
-        
+
       } else {
         # placeholder, do nothing
       }
@@ -99,7 +95,7 @@ shinyServer(function(input, output, session) {
         dfp1 <- merge(dfp1, data.frame(variable = c("Light", "log(Light)"),
                                      plot = c(1, 2)
                                      ))
-        
+
         print(str(DF))
         #analysis <- get_analysis()
 
@@ -108,8 +104,6 @@ shinyServer(function(input, output, session) {
           eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
                        round(m$coefficients[2],2), " * x")
 
-        
-        
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_line(aes(linetype = variable)) + scale_linetype_manual(values=c("solid", "blank")) +
           geom_point() + coord_flip() + facet_grid(.~plot, scales = "free") +
@@ -118,16 +112,11 @@ shinyServer(function(input, output, session) {
           geom_smooth(data = subset(dfp1, variable =="log(Light)"), method = "lm") +
           geom_text(data = data.frame(Depth = 1, value = 1, variable = "log(Light)"),
                     parse = TRUE, label = c("", eqt))
-        
 
         ggplotly(p1)
-        
-
       } else {
         # placeholder, do nothing
       }
     })
   })
-
 })
-

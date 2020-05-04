@@ -1,8 +1,8 @@
-library(rhandsontable)
-library(plotly)
-library(dplyr)
-library(rLakeAnalyzer)
-library(reshape2)
+library("rhandsontable")
+library("plotly")
+library("dplyr")
+library("rLakeAnalyzer")
+library("reshape2")
 
 shinyUI(fluidPage(
   headerPanel("Lake Profile Plot"),
