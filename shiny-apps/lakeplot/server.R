@@ -44,6 +44,8 @@ shinyServer(function(input, output, session) {
 
   output$multiprobe <- renderPlotly({
     input$runBtn
+    input$thermo
+    input$`10Ciso`
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -54,11 +56,28 @@ shinyServer(function(input, output, session) {
 
         print(str(DF))
 
+
+        
+        
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
           geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
           theme(legend.position="bottom") + xlab("Tiefe (m)")  +
           scale_x_continuous(trans = "reverse")
       
+        if(input$`10Ciso`) {
+          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C Isotherme"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        
+        if(input$thermo) {
+          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "Thermocline"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
         ggplotly(p1)
         
       } else {
