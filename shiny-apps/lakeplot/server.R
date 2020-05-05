@@ -5,8 +5,9 @@ library("reshape2")
 library("ggplot2")
 library("gridExtra")
 
-lastClrBtn <- 0
-lastAddRows <- 0
+lastClrBtn   <- 0
+lastAddRows  <- 0
+lastInputRun <- 0
 
 ## DF structure and example data
 DF <- data.frame(Depth=0:10,
@@ -32,38 +33,43 @@ shinyServer(function(input, output, session) {
 
   output$hot <- renderRHandsontable({
 
+    add10 <- input$addRows
+
     if(input$clrBtn > lastClrBtn) {
       lastClrBtn <<- input$clrBtn
-      #print(lastClrBtn)
-      DF <- hot_to_r(input$hot)
-      DF[,] <- as.numeric(NA) # as.numeric to avoid boolean
 
+      DF <- isolate(hot_to_r(input$hot))
+      DF[,] <- as.numeric(NA) # as.numeric to avoid boolean
+    } else  if (add10 > lastAddRows) {
+        lastAddRows <<- add10
+
+        DF <- isolate(hot_to_r(input$hot))
+        nm <- names(DF)
+        DF2 <- as.data.frame(matrix(NA, nrow=10, ncol=length(nm)))
+        colnames(DF2) <- nm
+
+        DF <- rbind(DF, DF2)
     } else {
       if (!is.null(input$hot)) {
-        DF <- hot_to_r(input$hot)
+        DF <- isolate(hot_to_r(input$hot))
       } else {
         print("startup")
+        lastClrBtn   <<- input$clrBtn
+        lastAddRows  <<- input$addRows
+        lastInputRun <<- input$runBtn
       }
     }
 
-    if (input$addRows > lastAddRows) {
-      lastAddRows <<- input$addRows
-      print(lastAddRows)
-
-      DF <- hot_to_r(input$hot)
-      nm <- names(DF)
-      DF2 <- as.data.frame(matrix(NA, nrow=10, ncol=length(nm)))
-      colnames(DF2) <- nm
-
-      DF <- rbind(DF, DF2)
-    }
+    #print("hot triggered")
 
     rhandsontable(DF, height=600)  %>%
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
   output$multiprobe <- renderPlotly({
+
     input$runBtn
+
     input$thermo
     input$`10Ciso`
     input$light1p
