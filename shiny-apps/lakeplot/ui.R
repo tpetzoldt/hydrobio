@@ -32,6 +32,9 @@ shinyUI(fluidPage(
           plotlyOutput("light2")#,
           #verbatimTextOutput("summary")
         ),
+        tabPanel("Methods and Tasks",
+                 includeHTML("methods.html")
+        ),
         tabPanel("Info",
           includeHTML("info.html")
         )

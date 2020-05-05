@@ -31,6 +31,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$hot <- renderRHandsontable({
+
     if(input$clrBtn > lastClrBtn) {
       lastClrBtn <<- input$clrBtn
       #print(lastClrBtn)
@@ -47,7 +48,7 @@ shinyServer(function(input, output, session) {
 
     if (input$addRows > lastAddRows) {
       lastAddRows <<- input$addRows
-      #print(lastAddRows)
+      print(lastAddRows)
 
       DF <- hot_to_r(input$hot)
       nm <- names(DF)
@@ -57,8 +58,11 @@ shinyServer(function(input, output, session) {
       DF <- rbind(DF, DF2)
     }
 
-    rhandsontable(DF, height=600)  %>%
+    rhandsontable(DF, height)  %>%
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
+
+    #rhandsontable(DF, height=600)  %>%
+    #  hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
   output$multiprobe <- renderPlotly({
@@ -233,8 +237,6 @@ shinyServer(function(input, output, session) {
         }
 
         ggplotly(p1)
-
-
       } else {
         # placeholder, do nothing
       }
