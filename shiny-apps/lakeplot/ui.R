@@ -13,13 +13,6 @@ shinyUI(fluidPage(
 
       rHandsontableOutput("hot"),
 
-      #h3("Start parameters"),
-
-      #fluidRow(
-      #column(3, numericInput("inpMean", label = "Mean", value = NA)),
-      #column(3, numericInput("inpSd", label = "SD", value = NA)),
-      #column(3, numericInput("inpK", label = "K", value = NA))
-      #),
       checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
       checkboxInput("thermo", "plot thermocline", FALSE),
       checkboxInput("light1p", "plot 1% light depth", FALSE),
