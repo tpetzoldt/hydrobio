@@ -367,16 +367,16 @@ summary {
 
 
 <div id="scientific-methods" class="section level2">
-<h2>Scientific Methods</h2>
-<div id="thermocline-and-10-deg-c-isotherme" class="section level3">
-<h3>Thermocline and 10 deg C isotherme</h3>
-<p>The thermocline is calculated with the <strong>R</strong> package <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a>. Different definitions and calculation methods exist for mixing depth (<span class="math inline">\(z_{mix}\)</span>) and thermocline, see for example the references in the <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">rLakeAnalyzer documentation</a></p>
+<h2>Scientific methods</h2>
+<div id="thermocline-and-10-degrees-celsius-isotherme" class="section level3">
+<h3>Thermocline and 10 degrees Celsius isotherme</h3>
+<p>The thermocline is calculated with the <strong>R</strong> package <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a>. Different definitions and calculation methods exist for mixing depth (<span class="math inline">\(z_{mix}\)</span>) and thermocline, see for example the references in the rLakeAnalyzer <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">documentation</a> (Winslow et al. 2019)</p>
 <p>As a simple rule of thumb, mixing depth can be estimated as the first depth where the temperature gradient is more than one degree per meter (1K/m).</p>
 <p>The rLakeAnalyzer algorithm is based on …</p>
-<p>The 10 deg C isotherme …</p>
+<p>The 10 degrees Celsius isotherme …</p>
 </div>
 <div id="underwater-light-profile-and-euphotic-zone" class="section level3">
-<h3>Underwater Light Profile and Euphotic Zone</h3>
+<h3>Underwater light profile and euphotic zone</h3>
 <p>The underwater light <span class="math inline">\(I_z\)</span> (<span class="math inline">\(I=\)</span> irradiation) in a particular depth <span class="math inline">\(z\)</span> can be estimated from Lambert-Beer’s law:</p>
 <p><span class="math display">\[
 I_z = I_0 \cdot e^{-\epsilon \cdot z}
@@ -393,13 +393,13 @@ I_z = I_0 \cdot e^{-\epsilon \cdot z}
 <h2>Tasks</h2>
 <p>Download data from … and compare temperature and light profiles. Search the internet for background information about the particular Lakes and Reservoirs and discuss how the profile characteristics are related to the lakes. Can you find agreements and disagreements? Are they plausible or surprising? ….</p>
 <p>Compare the rLakeAnalyzer thermocline with the 1K/m rule.</p>
-<p>Compare the extinction coefficients with data from a limnology textbook, e.g. Fig. xxx in Lampert and Sommer (xxxx)</p>
+<p>Compare the extinction coefficients with data from a limnology textbook e.g., Lampert and Sommer (2007), Figure 3.4</p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
-<p>Lampert and Sommer</p>
-<p>rLakeAnalyzer</p>
-<p>Wikipedia</p>
+<!-- Lampert Sommer, Wikipedia, R packages /-->
+<p>Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology of Lakes and Streams. Oxford university press.</p>
+<p>Winslow, Luke, Jordan Read, Richard Woolway, Jennifer Brentrup, Taylor Leach, Jake Zwart, Sam Albers, and Doug Collinge. 2019. RLakeAnalyzer: Lake Physics Tools. <a href="https://CRAN.R-project.org/package=rLakeAnalyzer" class="uri">https://CRAN.R-project.org/package=rLakeAnalyzer</a>.</p>
 </div>
 
 

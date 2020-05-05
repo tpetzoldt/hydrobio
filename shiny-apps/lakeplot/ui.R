@@ -40,8 +40,8 @@ shinyUI(fluidPage(
           #verbatimTextOutput("summary")
         ),
         tabPanel("Methods and Tasks",
-          #includeHTML("methods.html") # mysteriosly breaks rhandsontable
-          withMathJax(includeMarkdown("methods.md")) # works well
+          #withMathJax(includeHTML("methods.html")) # mysteriosly breaks rhandsontable
+          withMathJax(includeMarkdown("methods.md")) # works, but has issues with references and some math
 
         ),
         tabPanel("Info",

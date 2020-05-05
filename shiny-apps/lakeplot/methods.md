@@ -3,23 +3,24 @@ title: "Methods and Tasks"
 output: 
   html_document:
     keep_md: true
+bibliography: references.bib    
 ---
 
 
 
-## Scientific Methods
+## Scientific methods
 
-### Thermocline and 10 deg C isotherme
+### Thermocline and 10 degrees Celsius isotherme
 
-The thermocline is calculated with the **R** package [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different definitions and calculation methods exist for mixing depth ($z_{mix}$) and thermocline, see for example the references in the [rLakeAnalyzer documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html) 
+The thermocline is calculated with the **R** package [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different definitions and calculation methods exist for mixing depth ($z_{mix}$) and thermocline, see for example the references in the rLakeAnalyzer [documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html) (Winslow et al. 2019)
 
 As a simple rule of thumb, mixing depth can be estimated as the first depth where the temperature gradient is more than one degree per meter (1K/m).
 
 The rLakeAnalyzer algorithm is based on ...
 
-The 10 deg C isotherme ...
+The 10 degrees Celsius isotherme ...
 
-### Underwater Light Profile and Euphotic Zone
+### Underwater light profile and euphotic zone
 
 The underwater light $I_z$ ($I=$ irradiation) in a particular depth $z$ can be 
 estimated from Lambert-Beer's law:
@@ -43,16 +44,15 @@ Download data from ... and compare temperature and light profiles. Search the in
 
 Compare the rLakeAnalyzer thermocline with the 1K/m rule.
 
-Compare the extinction coefficients with data from a limnology textbook, e.g. Fig. xxx in Lampert  and Sommer (xxxx)
+Compare the extinction coefficients with data from a limnology textbook e.g., Lampert and Sommer (2007), Figure 3.4
 
 
 ## References
 
-Lampert and Sommer
-
-rLakeAnalyzer
-
-Wikipedia
+<!-- Lampert Sommer, Wikipedia, R packages /-->
 
 
+Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology of Lakes and Streams. Oxford university press.
+
+Winslow, Luke, Jordan Read, Richard Woolway, Jennifer Brentrup, Taylor Leach, Jake Zwart, Sam Albers, and Doug Collinge. 2019. RLakeAnalyzer: Lake Physics Tools. https://CRAN.R-project.org/package=rLakeAnalyzer.
 
