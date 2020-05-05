@@ -33,7 +33,7 @@ shinyUI(fluidPage(
           #verbatimTextOutput("summary")
         ),
         tabPanel("Methods and Tasks",
-                 includeHTML("methods.html")
+          includeHTML("methods.html")
         ),
         tabPanel("Info",
           includeHTML("info.html")

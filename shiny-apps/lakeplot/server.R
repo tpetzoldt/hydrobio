@@ -58,11 +58,8 @@ shinyServer(function(input, output, session) {
       DF <- rbind(DF, DF2)
     }
 
-    rhandsontable(DF, height)  %>%
+    rhandsontable(DF, height=600)  %>%
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
-
-    #rhandsontable(DF, height=600)  %>%
-    #  hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
   output$multiprobe <- renderPlotly({
