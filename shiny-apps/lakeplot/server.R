@@ -5,7 +5,9 @@ library("reshape2")
 library("ggplot2")
 library("gridExtra")
 
-lastClrBtn <- 0
+lastClrBtn   <- 0
+lastAddRows  <- 0
+lastInputRun <- 0
 
 ## DF structure and example data
 DF <- data.frame(Depth=0:10,
@@ -19,31 +21,55 @@ DF <- data.frame(Depth=0:10,
 
 shinyServer(function(input, output, session) {
 
+  get_eps <- reactive({
+    DF <- hot_to_r(input$hot)
+    m <- lm(log(DF$Light) ~ DF$Depth)
+    coef(m)[2]
+  })
+
   get_analysis <- reactive({
     # do some calculations
   })
 
-  output$hot = renderRHandsontable({
-    if(input$clrBtn) {
-      print(lastClrBtn)
+  output$hot <- renderRHandsontable({
+
+    add10 <- input$addRows
+
+    if(input$clrBtn > lastClrBtn) {
+      lastClrBtn <<- input$clrBtn
+
+      DF <- isolate(hot_to_r(input$hot))
       DF[,] <- as.numeric(NA) # as.numeric to avoid boolean
+    } else  if (add10 > lastAddRows) {
+        lastAddRows <<- add10
+
+        DF <- isolate(hot_to_r(input$hot))
+        nm <- names(DF)
+        DF2 <- as.data.frame(matrix(NA, nrow=10, ncol=length(nm)))
+        colnames(DF2) <- nm
+
+        DF <- rbind(DF, DF2)
     } else {
       if (!is.null(input$hot)) {
-        DF <- hot_to_r(input$hot)
+        DF <- isolate(hot_to_r(input$hot))
       } else {
         print("startup")
+        lastClrBtn   <<- input$clrBtn
+        lastAddRows  <<- input$addRows
+        lastInputRun <<- input$runBtn
       }
     }
 
-    rhandsontable(DF)  %>%
-      hot_table(highlightCol = TRUE, highlightRow = TRUE) #%>%
-      #hot_col(c("Depth"), type="numeric") %>%
-      #hot_col(c("Temp"), type="numeric") %>%
-      #hot_col("Oxygen", type="numeric")
+    #print("hot triggered")
+
+    rhandsontable(DF, height=600)  %>%
+      hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
   output$multiprobe <- renderPlotly({
+
     input$runBtn
+
     input$thermo
     input$`10Ciso`
     input$light1p
@@ -56,7 +82,7 @@ shinyServer(function(input, output, session) {
                                      plot = c(1, 1, 2, 3, 4)))
         dfp1 <- subset(df2, df2$variable %in% c("Temp", "Oxygen", "pH", "Cond"))
 
-        print(str(DF))
+        #print(str(DF))
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
           geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
@@ -69,17 +95,20 @@ shinyServer(function(input, output, session) {
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
-          
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
 
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -105,41 +134,42 @@ shinyServer(function(input, output, session) {
         df2 <- melt(DF, id.vars = "Depth")
         dfp1 <- subset(df2, df2$variable %in% c("Light"))
         if(input$light1p) {
-         dfp1$value <- dfp1$value/max(dfp1$value, na.rm = TRUE) 
+         dfp1$value <- dfp1$value/max(dfp1$value, na.rm = TRUE)
         }
-        print(str(DF))
-        
+        #print(str(DF))
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
-          geom_line() + geom_point() + coord_flip() + 
+          geom_line() + geom_point() + coord_flip() +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
-          scale_x_continuous(trans = "reverse") + 
-          ggtitle(ifelse(input$light1p, "Light relativ", "Light"))
-         
-        
+          scale_x_continuous(trans = "reverse") +
+          ggtitle(ifelse(input$light1p, "Light relative", "Light"))
+
 
         if(input$`10Ciso`) {
           z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-          
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
-          
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
-          
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
-        
+
+
         if(input$`10Ciso`) {
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -165,54 +195,55 @@ shinyServer(function(input, output, session) {
         df2 <- melt(DF, id.vars = "Depth")
         dfp1 <- subset(df2, df2$variable %in% c("Light"))
         dfp1$value <- log10(dfp1$value)
-        
-        print(str(DF))
+
+        #print(str(DF))
         #analysis <- get_analysis()
-        
+
         # linear fit
         m <- lm(log(DF$Light) ~ DF$Depth)
-        eqt <- paste0("y = ", round(m$coefficients[1],2), " ",
-                      round(m$coefficients[2],2), " * x")
-        
-        
-        
+        #eps <- coef(m)[2]
+        eqt <- paste0("y = ", round(coef(m)[1], 2), " ",
+                              round(coef(m)[2], 2), " * x")
+
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
-          geom_point() + coord_flip() + 
+          geom_point() + coord_flip() +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
           scale_x_continuous(trans = "reverse") +
           geom_smooth(method = "lm", aes(col = "linear fit")) +
           geom_text(data = data.frame(Depth = 1, value = 0.1, variable = "linear fit"),
                     parse = TRUE, label = eqt) + ggtitle("log(light) with linear fit")
-        
-        
+
+
         if(input$`10Ciso`) {
           z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-          
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         if(input$light1p) {
-          z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
-          
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         if(input$thermo) {
-          z_thermo <- thermo.depth(DF$Temp, DF$Depth)
-          
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
+
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
-        
+
         ggplotly(p1)
-        
-        
       } else {
         # placeholder, do nothing
       }
     })
   })
-  
+
 })

@@ -1,0 +1,55 @@
+---
+title: "Methods and Tasks"
+output: 
+  html_document:
+    keep_md: true
+bibliography: references.bib    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Scientific methods
+
+### Thermocline and 10$^\circ$C isotherme
+
+The thermocline is calculated with the **R** package [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different definitions and calculation methods exist for mixing depth ($z_{mix}$) and thermocline, see for example the references in the rLakeAnalyzer [documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html) [@rLakeAnalyzer]
+
+As a simple rule of thumb, mixing depth can be estimated as the first depth where the temperature gradient is more than one degree per meter (1K/m).
+
+The rLakeAnalyzer algorithm is based on ...
+
+The 10$^\circ$C isotherme ...
+
+### Underwater light profile and euphotic zone
+
+The underwater light $I_z$ ($I=$ irradiation) in a particular depth $z$ can be 
+estimated from Lambert-Beer's law:
+
+\[
+I_z = I_0 \cdot e^{-\epsilon \cdot z}
+\]
+
+where it is assumed that the light extinction coefficient $\epsilon$ is constant 
+over depth. This is of course an approximation for mainly two reaons:
+
+* light extinction depends on the light wavelength
+* color and particle density may not be evenly distributed over depth
+
+As a result, deviations ...
+
+
+## Tasks
+
+Download data from ... and compare temperature and light profiles. Search the internet for background information about the particular Lakes and Reservoirs and discuss how the profile characteristics are related to the lakes. Can you find agreements and disagreements? Are they plausible or surprising? ....
+
+Compare the rLakeAnalyzer thermocline with the 1K/m rule.
+
+Compare the extinction coefficients with data from a limnology textbook e.g., @lampert2007, Figure 3.4
+
+
+## References
+
+<!-- Lampert Sommer, Wikipedia, R packages /-->
+

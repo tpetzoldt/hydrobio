@@ -1,0 +1,112 @@
+---
+title: "Background and Tasks"
+output: 
+  html_document:
+    keep_md: true
+bibliography: references.bib    
+---
+
+
+
+## Scientific background
+
+### Thermocline and 10 degrees Celsius isotherme
+
+The thermocline is calculated with the **R** package
+[rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different
+definitions and calculation methods exist for mixing depth ($z_{mix}$)
+and thermocline, see for example the references in the rLakeAnalyzer
+[documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html)
+(Winslow et al. 2019)
+As a simple rule of thumb, mixing depth can be estimated as the first
+depth where the temperature gradient is more than one degree per meter
+(1K/m).
+The app uses the rLakeAnalyzer algorithm is used. To understand what
+it does is left as an exercise (see below).
+
+Both mixing depth and thermocline are somewhat complex. In reality,
+hydrophysical gradients are continuous and change dynamically. "Fixed
+boundaries" do not really exist, but they are good indicators and
+helpful for further computations.  Another practical indicator is the
+"10 degrees Celsius isotherme", that is even simpler and less
+influenced by complex interactions.
+
+### Underwater light profile and euphotic zone
+
+The underwater light $I_z$ ($I=$ irradiation) in a particular depth $z$ can be 
+estimated from the light intensity immediately below the water surface $I_0$ using 
+Lambert-Beer's law:
+
+\[
+I_z = I_0 \cdot e^{-\varepsilon \cdot z}
+\]
+
+where it is assumed that the light extinction coefficient
+$\varepsilon$ (in some books also named $k_d$) is constant over
+depth. This is of course an approximation for mainly two reaons:
+
+* light extinction depends on the light wavelength
+* color and particles are evenly distributed over depth
+
+The $\varepsilon$-value measured with an underwater light sensor is a
+mean value over depth and over a certain spectral range (the visible
+light or the photosynthetic active part).  so it can be called the
+"mean vertical and mean spectral extinction coefficient".
+
+It can be directly calculated from Lambert-Beer's law by linear
+regresion of the log-transformed equation
+
+\[
+\ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
+\]
+
+that is equivalent to a linear regression, where the coefficient $b = \varepsilon$:
+
+\[
+y = a  - b \cdot x
+\]
+
+### Limnological iteractions between light, temperature, oxygen pH and conductivity
+
+In aquatic ecosystems, hydrophysical, chemical and biological variables 
+are influenced by hydrology, meteorology and seasonal forcing and influence each 
+other. As a comprehensive description would exceed the space here, we refer to
+the hydrobiology lecture and the textbooks.
+
+You may consider the following keywords and questions:
+
+* seasonality and stratification patterns, e.g. dimictic, monomictic, polymictic
+* influence of stratification on oxygen availability, oxygen consumption and production
+* influence of trophic state on the shape of oxygen profile
+* influence of phytosynthetic activity on pH and conductivity (refers to the calcium-carbonate balance)
+* influence of climate warming on stratification duration
+* influence of stratification duration on oxygen in the hypolimnion
+* and more ...
+
+
+## Tasks and Exercises
+
+
+* Download data from the course home page and compare temperature and
+  light profiles. Search the internet for background information about
+  the particular Lakes and Reservoirs and discuss how the profile
+  characteristics are related to the lakes. Can you find agreements and
+  disagreements? Are they plausible or surprising?
+* Compare the rLakeAnalyzer thermocline with the 1K/m rule.
+* Try to reproduce the results with Excel, Libreoffice or an own R script.
+* Compare the extinction coefficients with data from a limnology
+  textbook e.g., Lampert and Sommer (2007), Figure 3.4
+
+
+## References
+
+<!-- Lampert Sommer, Wikipedia, R packages /-->
+
+
+Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology
+of Lakes and Streams. Oxford university press.
+
+Winslow, Luke, Jordan Read, Richard Woolway, Jennifer Brentrup, Taylor
+Leach, Jake Zwart, Sam Albers, and Doug Collinge. 2019. RLakeAnalyzer:
+Lake Physics Tools. https://CRAN.R-project.org/package=rLakeAnalyzer.
+
