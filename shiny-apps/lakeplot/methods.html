@@ -418,6 +418,130 @@ y = a  - b \cdot x
 <li>Compare the extinction coefficients with data from a limnology textbook e.g., Lampert and Sommer (2007), Figure 3.4</li>
 </ul>
 </div>
+<div id="bonus-recreate-the-plots-in-r" class="section level2">
+<h2>(bonus) recreate the plots in R</h2>
+<p>Below, the source code to calculate the 10°C isotherme, thermocline depth and 1% light depth, and create the plots shown in this application is provided. It is not required to understand this or to be able to recreate the plots in R. Nevertheless, some skill using the statistical programming language R can be advantageous in your futur (academic) career and there are lots of good resources to learn it online.</p>
+<pre class="r"><code># required libraries
+library(readxl)
+library(reshape2)
+library(ggplot2)
+library(rLakeAnalyzer)
+
+# read in the data
+DF &lt;- read_excel(&quot;data.xlsx&quot;)
+
+# reshape the data to &quot;long&quot; format
+df_long &lt;- melt(DF, id.vars = &quot;Depth&quot;)
+
+# add a column to create the different subplots
+df_long &lt;- merge(df_long, data.frame(variable = c(&quot;Temp&quot;, &quot;Oxygen&quot;, &quot;pH&quot;, &quot;Cond&quot;, &quot;chla&quot;, &quot;Turb&quot;,
+                                                  &quot;Light&quot;),
+                                     plot = c(&quot;Temp &amp; O2&quot;, &quot;Temp &amp; O2&quot;, &quot;pH&quot;, &quot;Conductivity&quot;,
+                                              &quot;Chlorophyl-a&quot;, &quot;Turbidity&quot;, &quot;Light&quot;)))
+
+# calculate 10°C isotherme
+z_iso10 &lt;- approx(DF$Temp, DF$Depth, 10)$y
+
+## calculate thermocline using rLakeAnalyzer
+# first remove NAs (Not Available)from the data
+DF_valid &lt;- na.omit(DF[c(&quot;Depth&quot;, &quot;Temp&quot;)])
+# calculate thermocline depth
+z_thermo &lt;- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
+## calculate 1% light depth
+# first fit a liner model to the logarithmic light data
+m &lt;- lm(log(DF$Light) ~ DF$Depth)
+# then calculate the depth where 1% light is left
+z_light &lt;- log(0.01) / m$coefficients[2]
+
+## first plots (Temp, O2, ph, and cond)
+# create subset of the data containing only Temp, O2, ph, and cond
+dat_p1 &lt;- subset(df_long, df_long$variable %in% c(&quot;Temp&quot;, &quot;Oxygen&quot;, &quot;pH&quot;, &quot;Cond&quot;))
+# plot the data using ggplot
+p1 &lt;- ggplot(dat_p1, aes(x = Depth, y = value, col = variable)) + geom_line() +
+          geom_point() + coord_flip()  +
+          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+          scale_x_continuous(trans = &quot;reverse&quot;) +
+          facet_grid(.~plot, scales = &quot;free&quot;)
+
+# add the thermocline depth, 10°C isotherme and 1% light depth to the plot
+
+p1 &lt;- p1 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
+                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+
+
+# show the plot
+p1
+
+## create chla and Trub plot
+# subset of data containing chla and Turb
+dat_p2 &lt;-  subset(df_long, df_long$variable %in% c(&quot;chla&quot;, &quot;Turb&quot;))
+
+# plot the data
+p2 &lt;- ggplot(dat_p2, aes(x = Depth, y = value, col = variable)) + geom_line() +
+          geom_point() + coord_flip()  +
+          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+          scale_x_continuous(trans = &quot;reverse&quot;) +
+          facet_grid(.~plot, scales = &quot;free&quot;)
+
+# add the thermocline depth, 10°C isotherme and 1% light depth to the plot
+
+p2 &lt;- p2 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
+                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+
+# show the plot
+p2
+
+
+## create the light plots
+# create subset with light data
+dat_p3 &lt;- subset(df_long, df_long$variable %in% c(&quot;Light&quot;))
+
+# plot the data (allready with the thermocline depth, 10°C isotherme and 1% light depth)
+p3 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
+          geom_line() + geom_point() + coord_flip() +
+          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+          scale_x_continuous(trans = &quot;reverse&quot;) +
+          ggtitle(&quot;Light&quot;) +
+  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+                              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
+                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+
+# show the plot
+p3
+## now plot log light and add the linear fit
+# get the coefficients from the linear model to show the equation in the plot
+eqt &lt;- paste0(&quot;y = &quot;, round(coef(m)[1], 2), &quot; &quot;,
+                              round(coef(m)[2], 2), &quot; * x&quot;)
+# plot log light (allready with the thermocline depth, 10°C isotherme and 1% light depth)
+p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
+  geom_point() + coord_flip() + scale_y_log10() +
+  theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+  scale_x_continuous(trans = &quot;reverse&quot;) +
+  geom_smooth(method = &quot;lm&quot;, aes(col = &quot;linear fit&quot;))  + ggtitle(&quot;log(light) with linear fit&quot;) + 
+  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+                               aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
+                               aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_text(data = data.frame(Depth = 1, value = 1, variable = &quot;linear fit&quot;),
+            parse = FALSE, label = eqt, color = &quot;black&quot;)
+
+# show the plot
+p4  </code></pre>
+</div>
 <div id="references" class="section level2">
 <h2>References</h2>
 <!-- Lampert Sommer, Wikipedia, R packages /-->
