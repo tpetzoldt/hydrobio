@@ -459,19 +459,19 @@ z_light &lt;- log(0.01) / m$coefficients[2]
 dat_p1 &lt;- subset(df_long, df_long$variable %in% c(&quot;Temp&quot;, &quot;Oxygen&quot;, &quot;pH&quot;, &quot;Cond&quot;))
 # plot the data using ggplot
 p1 &lt;- ggplot(dat_p1, aes(x = Depth, y = value, col = variable)) + geom_line() +
-          geom_point() + coord_flip()  +
-          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
-          scale_x_continuous(trans = &quot;reverse&quot;) +
-          facet_grid(.~plot, scales = &quot;free&quot;)
+  geom_point() + coord_flip()  +
+  theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+  scale_x_continuous(trans = &quot;reverse&quot;) +
+  facet_grid(.~plot, scales = &quot;free&quot;)
 
 # add the thermocline depth, 10°C isotherme and 1% light depth to the plot
 
 p1 &lt;- p1 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
                       aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
-   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
-                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
-                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
 
 
 # show the plot
@@ -483,19 +483,19 @@ dat_p2 &lt;-  subset(df_long, df_long$variable %in% c(&quot;chla&quot;, &quot;Tu
 
 # plot the data
 p2 &lt;- ggplot(dat_p2, aes(x = Depth, y = value, col = variable)) + geom_line() +
-          geom_point() + coord_flip()  +
-          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
-          scale_x_continuous(trans = &quot;reverse&quot;) +
-          facet_grid(.~plot, scales = &quot;free&quot;)
+  geom_point() + coord_flip()  +
+  theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+  scale_x_continuous(trans = &quot;reverse&quot;) +
+  facet_grid(.~plot, scales = &quot;free&quot;)
 
 # add the thermocline depth, 10°C isotherme and 1% light depth to the plot
 
 p2 &lt;- p2 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
                       aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
-   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
-                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+  geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
-                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
 
 # show the plot
 p2
@@ -507,23 +507,23 @@ dat_p3 &lt;- subset(df_long, df_long$variable %in% c(&quot;Light&quot;))
 
 # plot the data (allready with the thermocline depth, 10°C isotherme and 1% light depth)
 p3 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
-          geom_line() + geom_point() + coord_flip() +
-          theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
-          scale_x_continuous(trans = &quot;reverse&quot;) +
-          ggtitle(&quot;Light&quot;) +
+  geom_line() + geom_point() + coord_flip() +
+  theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
+  scale_x_continuous(trans = &quot;reverse&quot;) +
+  ggtitle(&quot;Light&quot;) +
   geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
-                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
-                              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
-                                aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;)
 
 # show the plot
 p3
 ## now plot log light and add the linear fit
 # get the coefficients from the linear model to show the equation in the plot
 eqt &lt;- paste0(&quot;y = &quot;, round(coef(m)[1], 2), &quot; &quot;,
-                              round(coef(m)[2], 2), &quot; * x&quot;)
+              round(coef(m)[2], 2), &quot; * x&quot;)
 # plot log light (allready with the thermocline depth, 10°C isotherme and 1% light depth)
 p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   geom_point() + coord_flip() + scale_y_log10() +
@@ -531,11 +531,11 @@ p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   scale_x_continuous(trans = &quot;reverse&quot;) +
   geom_smooth(method = &quot;lm&quot;, aes(col = &quot;linear fit&quot;))  + ggtitle(&quot;log(light) with linear fit&quot;) + 
   geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
-                      aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
-                               aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_thermo, variable = &quot;thermocline&quot;),
-                               aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
+             aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_text(data = data.frame(Depth = 1, value = 1, variable = &quot;linear fit&quot;),
             parse = FALSE, label = eqt, color = &quot;black&quot;)
 
