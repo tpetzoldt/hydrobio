@@ -24,7 +24,8 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Multi Parameter Probe",
-          plotlyOutput("multiprobe"),
+          plotlyOutput("multiprobe1"),
+          plotlyOutput("multiprobe2"),
           #verbatimTextOutput("summary")
         ),
         tabPanel("Light Sensor",

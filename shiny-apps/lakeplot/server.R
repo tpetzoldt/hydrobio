@@ -15,6 +15,8 @@ DF <- data.frame(Depth=0:10,
                  Oxygen=c(10, 12, 9, 8, 7, 5,5,4, 4, 3, 1),
                  pH=c(7.5,8,8.2,7,7,7.1,6.9,7,7,7,6.9),
                  Cond=runif(11,300,320),
+                 chla=c(3.4,3.6,4.4,5.1,3.4,2.7,2,1.1,0.3,0,0),
+                 Turb=c(0.91, 1.13, 1.06, 1.31, 1.15, 0.93, 0.50, 0.44, 0.42, 0.17, 0.19),
                  ## exponential curve with some relative error
                  Light = 100*exp(-0.5 * (0:10)) * runif(11, min=0.8, max=1.2)
                  )
@@ -66,7 +68,7 @@ shinyServer(function(input, output, session) {
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
-  output$multiprobe <- renderPlotly({
+  output$multiprobe1 <- renderPlotly({
 
     input$runBtn
 
@@ -78,16 +80,16 @@ shinyServer(function(input, output, session) {
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
         df2 <- melt(DF, id.vars = "Depth")
-        df2 <- merge(df2, data.frame(variable = c("Temp", "Oxygen", "pH", "Cond", "Light"),
-                                     plot = c(1, 1, 2, 3, 4)))
+        df2 <- merge(df2, data.frame(variable = c("Temp", "Oxygen", "pH", "Cond"),
+                                     plot = c("Temp & O2", "Temp & O2", "pH", "Conductivity")))
         dfp1 <- subset(df2, df2$variable %in% c("Temp", "Oxygen", "pH", "Cond"))
-
         #print(str(DF))
-
+  
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
-          geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
+          geom_point() + coord_flip()  +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
-          scale_x_continuous(trans = "reverse")
+          scale_x_continuous(trans = "reverse") +
+          facet_grid(.~plot, scales = "free")
 
         if(input$`10Ciso`) {
           z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
@@ -121,6 +123,61 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  output$multiprobe2 <- renderPlotly({
+    
+    input$runBtn
+    
+    input$thermo
+    input$`10Ciso`
+    input$light1p
+    
+    isolate({
+      if (!is.null(input$hot)) {
+        DF <- hot_to_r(input$hot)
+        df2 <- melt(DF, id.vars = "Depth")
+        df2 <- merge(df2, data.frame(variable = c("chla", "Turb"),
+                                     plot = c("Chlorophyl-a", "Turbidity")))
+        dfp1 <- subset(df2, df2$variable %in% c("chla", "Turb"))
+        
+        #print(str(DF))
+        
+        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) + geom_line() +
+          geom_point() + coord_flip()  + facet_grid(.~plot, scales = "free") +
+          theme(legend.position="bottom") + xlab("Depth (m)")  +
+          scale_x_continuous(trans = "reverse")
+        
+        if(input$`10Ciso`) {
+          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$light1p) {
+          ## thpe: use extinction formula instead of interpolation
+          #z_light <- approx(DF$Light/max(DF$Light, na.rm = TRUE), DF$Depth, 0.01)$y
+          z_light <- log(0.01) / get_eps()
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        
+        if(input$thermo) {
+          DF_valid <- na.omit(DF[c("Depth", "Temp")])
+          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+          
+          p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
+                                aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        ggplotly(p1)
+        
+      } else {
+        # placeholder, do nothing
+      }
+    })
+  })
+  
   output$light1 <- renderPlotly({
     input$runBtn
     input$light1p
