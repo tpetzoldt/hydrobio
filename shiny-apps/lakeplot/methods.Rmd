@@ -3,6 +3,7 @@ title: "Background and Tasks"
 output: 
   html_document:
     keep_md: true
+    code_folding: hide
 bibliography: references.bib    
 ---
 
@@ -102,6 +103,7 @@ You may consider the following keywords and questions:
 ## (bonus) recreate the plots in R
 
 Below, the source code to calculate the 10°C isotherme, thermocline depth and 1% light depth, and create the plots shown in this application is provided. It is not required to understand this or to be able to recreate the plots in R. Nevertheless, some skill using the statistical programming language R can be advantageous in your futur (academic) career and there are lots of good resources to learn it online.
+
 
 ```{r code = readLines("recreate_plots.R"), eval = FALSE}
 

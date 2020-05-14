@@ -188,6 +188,66 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+<script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia');
+  rCodeBlocks.each(function() {
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    if (show || $(this)[0].classList.contains('fold-show'))
+      div.addClass('in');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (show ? 'Hide' : 'Code') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs code-folding-btn pull-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + id)
+        .attr('aria-expanded', show)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // update state of button on show/hide
+    div.on('hidden.bs.collapse', function () {
+      showCodeText.text('Code');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+    });
+  });
+
+}
+</script>
 <style type="text/css">.hljs-literal {
 color: #990073;
 }
@@ -343,6 +403,9 @@ summary {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -358,6 +421,14 @@ summary {
 
 
 <div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -439,7 +510,7 @@ df_long &lt;- merge(df_long, data.frame(variable = c(&quot;Temp&quot;, &quot;Oxy
                                      plot = c(&quot;Temp &amp; O2&quot;, &quot;Temp &amp; O2&quot;, &quot;pH&quot;, &quot;Conductivity&quot;,
                                               &quot;Chlorophyl-a&quot;, &quot;Turbidity&quot;, &quot;Light&quot;)))
 
-# calculate 10°C isotherme
+# calculate 10Â°C isotherme
 z_iso10 &lt;- approx(DF$Temp, DF$Depth, 10)$y
 
 ## calculate thermocline using rLakeAnalyzer
@@ -464,9 +535,9 @@ p1 &lt;- ggplot(dat_p1, aes(x = Depth, y = value, col = variable)) + geom_line()
   scale_x_continuous(trans = &quot;reverse&quot;) +
   facet_grid(.~plot, scales = &quot;free&quot;)
 
-# add the thermocline depth, 10°C isotherme and 1% light depth to the plot
+# add the thermocline depth, 10Â°C isotherme and 1% light depth to the plot
 
-p1 &lt;- p1 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+p1 &lt;- p1 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 Â°C isotherme&quot;),
                       aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
@@ -488,9 +559,9 @@ p2 &lt;- ggplot(dat_p2, aes(x = Depth, y = value, col = variable)) + geom_line()
   scale_x_continuous(trans = &quot;reverse&quot;) +
   facet_grid(.~plot, scales = &quot;free&quot;)
 
-# add the thermocline depth, 10°C isotherme and 1% light depth to the plot
+# add the thermocline depth, 10Â°C isotherme and 1% light depth to the plot
 
-p2 &lt;- p2 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+p2 &lt;- p2 + geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 Â°C isotherme&quot;),
                       aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
@@ -505,13 +576,13 @@ p2
 # create subset with light data
 dat_p3 &lt;- subset(df_long, df_long$variable %in% c(&quot;Light&quot;))
 
-# plot the data (allready with the thermocline depth, 10°C isotherme and 1% light depth)
+# plot the data (allready with the thermocline depth, 10Â°C isotherme and 1% light depth)
 p3 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   geom_line() + geom_point() + coord_flip() +
   theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
   scale_x_continuous(trans = &quot;reverse&quot;) +
   ggtitle(&quot;Light&quot;) +
-  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 Â°C isotherme&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
@@ -524,13 +595,13 @@ p3
 # get the coefficients from the linear model to show the equation in the plot
 eqt &lt;- paste0(&quot;y = &quot;, round(coef(m)[1], 2), &quot; &quot;,
               round(coef(m)[2], 2), &quot; * x&quot;)
-# plot log light (allready with the thermocline depth, 10°C isotherme and 1% light depth)
+# plot log light (allready with the thermocline depth, 10Â°C isotherme and 1% light depth)
 p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   geom_point() + coord_flip() + scale_y_log10() +
   theme(legend.position=&quot;bottom&quot;) + xlab(&quot;Depth (m)&quot;)  +
   scale_x_continuous(trans = &quot;reverse&quot;) +
   geom_smooth(method = &quot;lm&quot;, aes(col = &quot;linear fit&quot;))  + ggtitle(&quot;log(light) with linear fit&quot;) + 
-  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 °C isotherme&quot;),
+  geom_vline(data = data.frame(x = z_iso10, variable = &quot;10 Â°C isotherme&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
   geom_vline(data = data.frame(x = z_light, variable = &quot;1% light depth&quot;),
              aes(xintercept = x, col = variable), linetype = &quot;dashed&quot;) +
@@ -582,6 +653,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
