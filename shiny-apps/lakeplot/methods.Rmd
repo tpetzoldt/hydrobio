@@ -35,7 +35,7 @@ influenced by complex interactions.
 
 ### Oxygen saturation
 
-Oxygen saturation is given by the ratio of the actuall oxygen concentration and the oxygen satuiiration concentration at the given temperature. The saturation concentration can be estimated as a function of watertemperature and barometric pressure using the equation by Mortimer (1981):
+Oxygen saturation is given by the ratio of the actual oxygen concentration and the oxygen saturation concentration at the given temperature. The saturation concentration can be approximated as a function of water temperature and barometric pressure using the equation of Mortimer (1981):
 
 \[
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
