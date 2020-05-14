@@ -373,6 +373,15 @@ summary {
 <p>The thermocline in the plots is calculated using the <strong>R</strong> package <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a>. Different definitions and calculation methods exist for mixing depth (<span class="math inline">\(z_{mix}\)</span>) and thermocline, see for example the references in the rLakeAnalyzer <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">documentation</a> (Winslow et al. 2019) As a simple rule of thumb, mixing depth can be estimated as the first depth where the temperature gradient is more than one degree per meter (1K/m). The app uses the rLakeAnalyzer algorithm, to understand what it does is left as an exercise (see below).</p>
 <p>Both mixing depth and thermocline are somewhat complex. In reality, hydrophysical gradients are continuous and change dynamically. “Fixed boundaries” do not really exist, but they are good indicators and helpful for further computations. Another practical indicator is the “10 degrees Celsius isotherme”, that is even simpler and less influenced by complex interactions.</p>
 </div>
+<div id="oxygen-saturation" class="section level3">
+<h3>Oxygen saturation</h3>
+<p>Oxygen saturation is given by the ratio of the actuall oxygen concentration and the oxygen satuiiration concentration at the given temperature. The saturation concentration can be estimated as a function of watertemperature and barometric pressure using the equation by Mortimer (1981):</p>
+<p><span class="math display">\[
+C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
+\frac{p}{1013.25}
+\]</span></p>
+<p>where <span class="math inline">\(T\)</span> is the temperature in degrees Celsius, and <span class="math inline">\(p\)</span> is the air pressure in hecto Pascal. The resulting saturation concentration is in units of gO/m<span class="math inline">\(^3\)</span> or mgO/l.</p>
+</div>
 <div id="underwater-light-profile-and-euphotic-zone" class="section level3">
 <h3>Underwater light profile and euphotic zone</h3>
 <p>The underwater light <span class="math inline">\(I_z\)</span> (<span class="math inline">\(I=\)</span> irradiation) in a particular depth <span class="math inline">\(z\)</span> can be estimated from the light intensity immediately below the water surface <span class="math inline">\(I_0\)</span> using Lambert-Beer’s law:</p>
@@ -546,6 +555,7 @@ p4  </code></pre>
 <h2>References</h2>
 <!-- Lampert Sommer, Wikipedia, R packages /-->
 <p>Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology of Lakes and Streams. Oxford university press.</p>
+<p>Mortimer, C. H. 1981. The oxygen content of air-saturated fresh waters over ranges of temperature and atmospheric presure of limnological interest. Mitteilungen Internationale Vereinigung für theoretische und angewandte Limnologie, 22:1–23.</p>
 <p>Winslow, Luke, Jordan Read, Richard Woolway, Jennifer Brentrup, Taylor Leach, Jake Zwart, Sam Albers, and Doug Collinge. 2019. RLakeAnalyzer: Lake Physics Tools. <a href="https://CRAN.R-project.org/package=rLakeAnalyzer" class="uri">https://CRAN.R-project.org/package=rLakeAnalyzer</a>.</p>
 </div>
 
