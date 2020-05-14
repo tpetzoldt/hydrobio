@@ -26,11 +26,13 @@ shinyUI(fluidPage(
         tabPanel("Multi Parameter Probe",
           plotlyOutput("multiprobe1"),
           plotlyOutput("multiprobe2"),
+          tableOutput("sumTable1")#,
           #verbatimTextOutput("summary")
         ),
         tabPanel("Light Sensor",
           plotlyOutput("light1"),
-          plotlyOutput("light2")#,
+          plotlyOutput("light2"),
+          tableOutput("sumTable2")#,
           #verbatimTextOutput("summary")
         ),
         tabPanel("Methods and Tasks",
