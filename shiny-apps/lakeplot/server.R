@@ -68,6 +68,21 @@ shinyServer(function(input, output, session) {
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
+  sumTable <-  reactive({
+
+    input$runBtn
+    z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+    DF_valid <- na.omit(DF[c("Depth", "Temp")])
+    z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+    eps <- get_eps()
+    z_light <- log(0.01)/eps
+    setNames(data.frame(z_iso10, z_thermo, z_light, eps),
+            c("10C isotherme", "thermocline depth", "1% light depth", "epsilon"))
+  })
+  
+  output$sumTable1 <- renderTable(sumTable()) 
+  output$sumTable2 <- renderTable(sumTable())  
+    
   output$multiprobe1 <- renderPlotly({
 
     input$runBtn
@@ -104,7 +119,7 @@ shinyServer(function(input, output, session) {
           z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
-                                aes(xintercept = x, col = variable), linetype = "dashed")
+                                aes(xintercept = x, col = variable), linetype = "dotted")
         }
 
 
@@ -134,10 +149,13 @@ shinyServer(function(input, output, session) {
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
+        DF$O2_sat <- DF$Oxygen/(exp(7.7117 - 1.31403 * log(DF$Temp + 45.93)))*100
         df2 <- melt(DF, id.vars = "Depth")
-        df2 <- merge(df2, data.frame(variable = c("Chla", "Turb"),
-                                     plot = c("4: Chlorophyl-a (mug/L)" , "5: Turbidity (NTU)")))
-        dfp1 <- subset(df2, df2$variable %in% c("Chla", "Turb"))
+        df2 <- merge(df2, data.frame(variable = c("O2_sat", "Chla", "Turb"),
+                                     plot = c("4: Oxygen saturation (%)",
+                                              "5: Chlorophyl-a (mug/L)",
+                                              "6: Turbidity (NTU)")))
+        dfp1 <- subset(df2, df2$variable %in% c("O2_sat", "Chla", "Turb"))
 
         #print(str(DF))
 
@@ -159,7 +177,7 @@ shinyServer(function(input, output, session) {
           z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
-                                aes(xintercept = x, col = variable), linetype = "dashed")
+                                aes(xintercept = x, col = variable), linetype = "dotted")
         }
 
 
@@ -215,7 +233,7 @@ shinyServer(function(input, output, session) {
           z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
-                                aes(xintercept = x, col = variable), linetype = "dashed")
+                                aes(xintercept = x, col = variable), linetype = "dotted")
         }
 
         if(input$thermo) {
@@ -259,17 +277,23 @@ shinyServer(function(input, output, session) {
         # linear fit
         m <- lm(log(DF$Light) ~ DF$Depth)
         #eps <- coef(m)[2]
-        eqt <- paste0("y = ", round(coef(m)[1], 2), " ",
-                              round(coef(m)[2], 2), " * x")
+        funtext <- data.frame(
+          xpos = 0,
+          ypos =  0,
+          annotateText = paste0("y = ", round(coef(m)[1], 2), " ",
+                                round(coef(m)[2], 2), " * x"),
+          variable = "linear fit")
+        
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_point() + coord_flip() +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
           scale_x_continuous(trans = "reverse") +
           geom_smooth(method = "lm", aes(col = "linear fit")) +
-          geom_text(data = data.frame(Depth = 1, value = 0.1, variable = "linear fit"),
-                    parse = TRUE, label = eqt) + ggtitle("log(light) with linear fit")
-
+          geom_text(data = funtext, aes(x = xpos, y = ypos,
+                                        label = annotateText, col = variable),
+                    parse = TRUE) + 
+          ggtitle("log(light) with linear fit")
 
         if(input$`10Ciso`) {
           z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
@@ -284,7 +308,7 @@ shinyServer(function(input, output, session) {
           z_light <- log(0.01) / get_eps()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
-                                aes(xintercept = x, col = variable), linetype = "dashed")
+                                aes(xintercept = x, col = variable), linetype = "dotted")
         }
 
         if(input$thermo) {

@@ -34,6 +34,17 @@ helpful for further computations.  Another practical indicator is the
 "10 degrees Celsius isotherme", that is even simpler and less
 influenced by complex interactions.
 
+### Oxygen saturation
+
+Oxygen saturation is given by the ratio of the actual oxygen concentration and the oxygen saturation concentration at the given temperature. The saturation concentration can be approximated as a function of water temperature and barometric pressure using the equation of Mortimer (1981):
+
+\[
+C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
+\frac{p}{1013.25}
+\]
+
+where $T$ is the temperature in degrees Celsius, and $p$ is the air pressure in hecto Pascal. The resulting saturation concentration is in units of gO/m$^3$ or mgO/l.
+
 ### Underwater light profile and euphotic zone
 
 The underwater light $I_z$ ($I=$ irradiation) in a particular depth $z$ can be 
@@ -117,6 +128,11 @@ Below, the source code to calculate the 10°C isotherme, thermocline depth and 1
 
 Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology
 of Lakes and Streams. Oxford university press.
+
+Mortimer, C. H. 1981. The oxygen content of air-saturated fresh waters
+over ranges of temperature and atmospheric presure of limnological
+interest. Mitteilungen Internationale Vereinigung für theoretische und
+angewandte Limnologie, 22:1–23.
 
 Winslow, Luke, Jordan Read, Richard Woolway, Jennifer Brentrup, Taylor
 Leach, Jake Zwart, Sam Albers, and Doug Collinge. 2019. RLakeAnalyzer:
