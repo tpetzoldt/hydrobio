@@ -29,6 +29,23 @@ shinyServer(function(input, output, session) {
     coef(m)[2]
   })
 
+  get_iso10 <- reactive({
+    DF <- hot_to_r(input$hot)
+    z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+    if(all(DF$Temp <= 10)) {
+      z_iso10 <- NA
+    }
+    return(z_iso10)
+  })
+  
+  get_thermo <- reactive({
+    DF <- hot_to_r(input$hot)
+    DF_valid <- na.omit(DF[c("Depth", "Temp")])
+    z_thermo <- NA
+    z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+    return(z_thermo)
+  })
+  
   get_analysis <- reactive({
     # do some calculations
   })
@@ -71,9 +88,9 @@ shinyServer(function(input, output, session) {
   sumTable <-  reactive({
 
     input$runBtn
-    z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-    DF_valid <- na.omit(DF[c("Depth", "Temp")])
-    z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
+    z_iso10 <- get_iso10()
+    z_thermo <- get_thermo()
     eps <- get_eps()
     z_light <- log(0.01)/eps
     setNames(data.frame(z_iso10, z_thermo, z_light, eps),
@@ -107,7 +124,7 @@ shinyServer(function(input, output, session) {
           facet_grid(.~plot, scales = "free")
 
         if(input$`10Ciso`) {
-          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          z_iso10 <-get_iso10()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -124,8 +141,8 @@ shinyServer(function(input, output, session) {
 
 
         if(input$thermo) {
-          DF_valid <- na.omit(DF[c("Depth", "Temp")])
-          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+         
+          z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -165,7 +182,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(trans = "reverse")
 
         if(input$`10Ciso`) {
-          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          z_iso10 <- get_iso10()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -182,8 +199,8 @@ shinyServer(function(input, output, session) {
 
 
         if(input$thermo) {
-          DF_valid <- na.omit(DF[c("Depth", "Temp")])
-          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+         
+          z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -221,7 +238,7 @@ shinyServer(function(input, output, session) {
 
 
         if(input$`10Ciso`) {
-          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          z_iso10 <-get_iso10()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -237,8 +254,8 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$thermo) {
-          DF_valid <- na.omit(DF[c("Depth", "Temp")])
-          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
+
+          z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -296,7 +313,7 @@ shinyServer(function(input, output, session) {
           ggtitle("log(light) with linear fit")
 
         if(input$`10Ciso`) {
-          z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
+          z_iso10 <-get_iso10()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
@@ -312,9 +329,8 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$thermo) {
-          DF_valid <- na.omit(DF[c("Depth", "Temp")])
-          z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
-
+       
+          z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
