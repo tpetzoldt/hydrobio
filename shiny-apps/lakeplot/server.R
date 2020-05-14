@@ -75,8 +75,9 @@ shinyServer(function(input, output, session) {
     DF_valid <- na.omit(DF[c("Depth", "Temp")])
     z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
     eps <- get_eps()
-    setNames(data.frame(z_iso10, z_thermo, eps),
-            c("10C isotherme", "thermocline depth", "epsilon"))
+    z_light <- log(0.01)/eps
+    setNames(data.frame(z_iso10, z_thermo, z_light, eps),
+            c("10C isotherme", "thermocline depth", "1% light depth", "epsilon"))
   })
   
   output$sumTable1 <- renderTable(sumTable()) 
