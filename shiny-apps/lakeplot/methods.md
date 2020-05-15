@@ -9,8 +9,6 @@ bibliography: references.bib
 
 
 
-[German translation](methods_de.html)
-
 ## Scientific background
 
 ### Thermocline and 10 degrees Celsius isotherme
