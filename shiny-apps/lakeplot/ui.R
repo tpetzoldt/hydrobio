@@ -14,7 +14,7 @@ shinyUI(fluidPage(
       rHandsontableOutput("hot"),
       h4("Measurement units"),
       p("Depth: m, Temp: °C, pH: -, Conductivity: mS/m, Turb: NTU, Light: Iz/I0 (percent)"),
-      h3("Options"),
+      h4("Options"),
       checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
       checkboxInput("thermo", "plot thermocline", FALSE),
       checkboxInput("light1p", "plot 1% light depth", FALSE),
@@ -38,12 +38,12 @@ shinyUI(fluidPage(
           tableOutput("sumTable2")#,
           #verbatimTextOutput("summary")
         ),
-        tabPanel("Methods and Tasks (EN)",
+        tabPanel("Exercises (EN)",
           #withMathJax(includeHTML("methods.html")) # mysteriosly breaks rhandsontable
           withMathJax(includeMarkdown("methods.md")) # works, but has issues with references and some math
 
         ),
-        tabPanel("Methoden und Aufgaben (DE)",
+        tabPanel("Aufgaben (DE)",
                  withMathJax(includeMarkdown("methods_de.md")) # works, but has issues with references and some math
 
         ),
