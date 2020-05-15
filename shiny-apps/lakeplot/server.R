@@ -24,21 +24,32 @@ DF <- data.frame(Depth=0:10,
 shinyServer(function(input, output, session) {
 
   get_eps <- reactive({
+    if(is.null(input$hot)) return(NA) # emergency exit during initialization
     DF <- hot_to_r(input$hot)
-    m <- lm(log(DF$Light) ~ DF$Depth)
-    coef(m)[2]
+    DF_valid <- na.omit(DF[c("Depth", "Light")])
+    if (nrow(DF_valid) > 2) {
+      m <- lm(log(Light) ~ Depth, data = DF_valid)
+      coef(m)[2]
+    } else {
+      NA
+    }
   })
 
   get_iso10 <- reactive({
+    if(is.null(input$hot)) return(NA) # emergency exit during initialization
     DF <- hot_to_r(input$hot)
-    z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-    if(all(DF$Temp <= 10)) {
+    DF_valid <- na.omit(DF[c("Depth", "Temp")])
+
+    if(any(DF_valid$Temp > 10) & nrow(DF_valid) > 2) {
+      z_iso10 <- approx(DF_valid$Temp, DF_valid$Depth, 10, ties = mean)$y
+    } else {
       z_iso10 <- NA
     }
     return(z_iso10)
   })
 
   get_thermo <- reactive({
+    if(is.null(input$hot)) return(NA) # emergency exit during initialization
     DF <- hot_to_r(input$hot)
     DF_valid <- na.omit(DF[c("Depth", "Temp")])
     z_thermo <- NA
@@ -150,7 +161,7 @@ shinyServer(function(input, output, session) {
         ggplotly(p1)
 
       } else {
-        # placeholder, do nothing
+        NULL # return NULL if input$hot is not yet initialized
       }
     })
   })
@@ -292,7 +303,16 @@ shinyServer(function(input, output, session) {
         #analysis <- get_analysis()
 
         # linear fit
-        m <- lm(log(DF$Light) ~ DF$Depth)
+        #m <- lm(log(DF$Light) ~ DF$Depth)
+
+        DF_valid <- na.omit(DF[c("Depth", "Light")])
+        if (nrow(DF_valid) > 1) {
+          m <- lm(log(Light) ~ Depth, data = DF_valid)
+        }
+        else {
+          return(NULL) # emergency exit from the function
+        }
+
         #eps <- coef(m)[2]
         funtext <- data.frame(
           xpos = 0,
@@ -302,11 +322,11 @@ shinyServer(function(input, output, session) {
           variable = "linear fit")
 
 
-        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
+        p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable), na.omit = TRUE) +
           geom_point() + coord_flip() +
           theme(legend.position="bottom") + xlab("Depth (m)")  +
           scale_x_continuous(trans = "reverse") +
-          geom_smooth(method = "lm", aes(col = "linear fit")) +
+          geom_smooth(method = "lm", formula = y ~ x, aes(col = "linear fit")) +
           geom_text(data = funtext, aes(x = xpos, y = ypos,
                                         label = annotateText, col = variable),
                     parse = TRUE) +
