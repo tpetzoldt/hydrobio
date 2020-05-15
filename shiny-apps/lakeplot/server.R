@@ -37,7 +37,7 @@ shinyServer(function(input, output, session) {
     }
     return(z_iso10)
   })
-  
+
   get_thermo <- reactive({
     DF <- hot_to_r(input$hot)
     DF_valid <- na.omit(DF[c("Depth", "Temp")])
@@ -45,7 +45,7 @@ shinyServer(function(input, output, session) {
     z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
     return(z_thermo)
   })
-  
+
   get_analysis <- reactive({
     # do some calculations
   })
@@ -96,10 +96,10 @@ shinyServer(function(input, output, session) {
     setNames(data.frame(z_iso10, z_thermo, z_light, eps),
             c("10C isotherme", "thermocline depth", "1% light depth", "epsilon"))
   })
-  
-  output$sumTable1 <- renderTable(sumTable()) 
-  output$sumTable2 <- renderTable(sumTable())  
-    
+
+  output$sumTable1 <- renderTable(sumTable())
+  output$sumTable2 <- renderTable(sumTable())
+
   output$multiprobe1 <- renderPlotly({
 
     input$runBtn
@@ -141,7 +141,7 @@ shinyServer(function(input, output, session) {
 
 
         if(input$thermo) {
-         
+
           z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
@@ -199,7 +199,7 @@ shinyServer(function(input, output, session) {
 
 
         if(input$thermo) {
-         
+
           z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
@@ -300,7 +300,7 @@ shinyServer(function(input, output, session) {
           annotateText = paste0("y = ", round(coef(m)[1], 2), " ",
                                 round(coef(m)[2], 2), " * x"),
           variable = "linear fit")
-        
+
 
         p1 <- ggplot(dfp1, aes(x = Depth, y = value, col = variable)) +
           geom_point() + coord_flip() +
@@ -309,7 +309,7 @@ shinyServer(function(input, output, session) {
           geom_smooth(method = "lm", aes(col = "linear fit")) +
           geom_text(data = funtext, aes(x = xpos, y = ypos,
                                         label = annotateText, col = variable),
-                    parse = TRUE) + 
+                    parse = TRUE) +
           ggtitle("log(light) with linear fit")
 
         if(input$`10Ciso`) {
@@ -329,7 +329,7 @@ shinyServer(function(input, output, session) {
         }
 
         if(input$thermo) {
-       
+
           z_thermo <- get_thermo()
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
