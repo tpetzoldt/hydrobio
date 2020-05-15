@@ -1,5 +1,5 @@
 ---
-title: "Background and Tasks"
+title: "Wissenschaftliche Grundlagen und Aufgaben"
 output: 
   html_document:
     keep_md: true
@@ -9,125 +9,135 @@ bibliography: references.bib
 
 
 
-[German translation](methods_de.html)
+## Wissenschaftliche Grundlagen
 
-## Scientific background
+### Die Thermokline und die 10 Grad Celsius-Isotherme
 
-### Thermocline and 10 degrees Celsius isotherme
+Die Thermokline in den Plots wird mit Hilfe des **R**-Pakets
+[rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/)
+berechnet.
 
-The thermocline in the plots is calculated using the **R** package
-[rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different
-definitions and calculation methods exist for mixing depth ($z_{mix}$)
-and thermocline, see for example the references in the rLakeAnalyzer
-[documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html)
-(Winslow et al. 2019)
-As a simple rule of thumb, mixing depth can be estimated as the first
-depth where the temperature gradient is more than one degree per meter
-(1K/m).
-The app uses the rLakeAnalyzer algorithm, to understand what
-it does is left as an exercise (see below).
+Generell existieren für die Berechnung der Sprungsschicht ($z_{mix}$)
+bzw.  Thermokline unterschiedliche Definitionen und
+Berechnungsverfahren, siehe z.B.  [Winslow et
+al. 2019](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html)
 
-Both mixing depth and thermocline are somewhat complex. In reality,
-hydrophysical gradients are continuous and change dynamically. "Fixed
-boundaries" do not really exist, but they are good indicators and
-helpful for further computations.  Another practical indicator is the
-"10 degrees Celsius isotherme", that is even simpler and less
-influenced by complex interactions.
+Als einfache Faustregel wird oft die Tiefe angegeben, bei der der
+Temperaturgradient mehr als 1 Grad pro Meter (1K/m) beträgt.  Die
+vorliegende App nutzt den **rLakeAnalyzer**-Algorithmus, das
+Verständnis der Funktiosweise belassen wir als Aufgabe (siehe unten).
 
-### Oxygen saturation
+In der Realität sind Durchmischungstiefe bzw. Thermokline physikalisch
+komplex gesteuert. Außerdem sind die physikalischen Gradienten
+(z.B. Temperatur, Dichte, Turbulenz) eigentlich kontinuierlich und
+ändern sich dynamisch.  Feste Grenzen gibt es eigentlich nicht, als
+Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch
+sehr nützlich.  Ein weiterer noch einfacherer pragmatischer Indikator
+ist die 10 Grad Celsius-Isotherme.
 
-Oxygen saturation is given by the ratio of the actual oxygen
-concentration and the oxygen saturation concentration at the given
-temperature. The saturation concentration can be approximated as a
-function of water temperature and barometric pressure using the
-equation of Mortimer (1981):
+### Sauerstoffsättigungskonzentration
+
+Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen
+Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen
+Konzentration von Sauerstoffgesättigtem Wasser bei einer bestimmten
+Luftdruck und einer bestimmten Temperatur.  Zur Abschätzung existieren
+verschiedene empirische Formeln, z.B. die recht einfache Formel von
+Mortimer (1981):
 
 \[
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
 \frac{p}{1013.25}
 \]
 
-where $T$ is the temperature in degrees Celsius, and $p$ is the air
-pressure in hectopascal. The resulting saturation concentration is in
-units of gO/m$^3$ or mgO/l.
+mit Temperatur $T$ in Grad Celsius und Luftdruck $p$ in Hectopascal.
+Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g
+O/m$^3$ bzw. mg O/L.  Weitere Formeln und entsprechende
+Literaturangaben finden sich im R-Paket
+[marelac](https://CRAN.R-project.org/package=marelac).
 
-### Underwater light profile and euphotic zone
+### Unterwasserlichtprofil und euphotische Zone
 
-The underwater light $I_z$ ($I=$ irradiation) in a particular depth
-$z$ can be estimated from the light intensity immediately below the
-water surface $I_0$ using Lambert-Beer's law:
+Die Unterwasser-Lichtintensität $I_z$ ($I=$ irradiation) in einer
+bestimmten Tiefe $z$ ergibt sich aus der Lichtintensität unmittelbar
+unter der Wasseroberfläche $I_0$ über das Lambert-Beer'sche Gesetz:
 
 \[
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 \]
 
-where it is assumed that the light extinction coefficient
-$\varepsilon$ (in some books also named $k_d$) is constant over
-depth. This is of course an approximation for mainly two reasons:
+wobei angenommen wird dass der Lichtextinktionskoeffizient
+$\varepsilon$ (in manchen Büchern $k_d$ genannt) über die Tiefe
+konstant ist. Das ist aus mehreren Gründen eine Vereinfachung, weil:
 
-* light extinction depends on the light wavelength
-* color and particles are evenly distributed over depth
+* die Lichtextinktion von der Wellenlänge abhängig ist und
+* Färbung und Partikel über im Wasser nicht gleichmäßig verteilt sind.
 
-The $\varepsilon$-value measured with an underwater light sensor is a
-mean value over depth and over a certain spectral range (the visible
-light or the photosynthetic active part), so it can be called the
-"mean vertical and mean spectral extinction coefficient".
+Aus diesem Grund ist der mit Hilfe eines Unterwasserlichtsensors
+gemessene $\varepsilon$-Wert ein Mittelwert über die Tiefe und über
+einen bestimmten Spektralbereich, z.B. das sichtbare Licht oder den
+photosynthetisch aktiven Bereich (photosynthetisch aktive Strahlung
+PAR). Man spricht deshalb vom "mittleren vertikalen und mittleren
+spektralen Lichtextinktionskoeffizient".
 
-It can be directly calculated from Lambert-Beer's law by linear
-regresion of the log-transformed equation
+Der Koeffizient kann mit qHilfe der logarithmisch-transformierten Form
+des Lambert-Beerschen Gesetzes:
 
 \[
 \ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
 \]
 
-that is equivalent to a linear regression, where the coefficient $b =
-\varepsilon$:
+bestimmt werden, analog einer linearen Regression mit $b = \varepsilon$:
 
 \[
 y = a  - b \cdot x
 \]
 
-### Limnological interactions between light, temperature, oxygen pH and conductivity
+### Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit
 
-In aquatic ecosystems, hydrophysical, chemical and biological
-variables are influenced by hydrology, meteorology and seasonal
-forcing and influence each other. As a comprehensive description would
-exceed the space here, we refer to the hydrobiology lecture and the
-textbooks.
+Die hydrophysikalischen, chemischen und biologischen Variablen
+aquatischer Ökosysteme werden durch hydrologische, meteorologische und
+andere saisonale Faktoren gesteuert und beeinflussen sich
+gegenseitig. Eine umfassende Beschreibung würde den Rahmen dieses
+Textes überschreiten, deshalb wird auf die Vorlesung und die
+Lehrbücher verwiesen.
 
-You may consider the following keywords and questions:
+Als Anregung für Wiederholung und Selbsrstudium dienen die folgenden Stichworte und Fragen:
 
-* seasonality and stratification patterns, e.g. dimictic, monomictic, polymictic
-* influence of stratification on oxygen availability, oxygen consumption and production
-* influence of trophic state on the shape of oxygen profile
-* influence of phytosynthetic activity on pH and conductivity (refers to the calcium-carbonate balance)
-* influence of climate warming on stratification duration
-* influence of stratification duration on oxygen in the hypolimnion
-* and more ...
+* Saisonalität und Schichtungsmuster, z.B. dimiktisch, monomiktisch, polymiktisch
+* Einfluss der Schichtung auf die Sauerstoffverfügbarkeit und die Form des Sauerstoffprofils
+* Einfluss des Gewässertrophe  auf die Sauerstoffkurve
+* Einfluss der photosynthetischen Aktivität auf pH-Wert und Leitfähigkeit (siehe Kalk-Kohlensäure-Gleichgewicht)
+* Einfluss der Klimaerwärmnug auf die Dauer der Schichtung
+* Einfluss der Schichtungsdauer auf den Sauerstoffhaushalt im Hypolimnion
+* usw.
 
 
-## Tasks and Exercises
+## Aufgaben und Übungen
 
-* Download data from the course home page and compare temperature and
-  light profiles. Search the internet for background information about
-  the particular Lakes and Reservoirs and discuss how the profile
-  characteristics are related to the lakes. Can you find agreements
-  and disagreements? Are they plausible or surprising?
-* Compare the rLakeAnalyzer thermocline with the 1K/m rule.
-* Try to reproduce the results with Libreoffice, Excel or an own R
-  script.
-* Compare the extinction coefficients with data from a limnology
-  textbook e.g., Lampert and Sommer (2007), Figure 3.4
+* Laden sie sich die daten von der Kurs-Homepage herunter und
+  vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im
+  Internet nach den Charakteristika der jeweiligen Seen
+  bzw. Talsperren und diskutieren Sie den Zusammenhang zwischen
+  beobachteten Profilen und den Seeneigenschaften. Gibt es
+  Übereinstimmungen oder Widersprüche? Sind diese plausibel oder
+  überraschend?
+* Vergleichen Sie die vom rLakeAnalyzer abgeschätzten Werte der
+  Thermokline mit der 1K/m-Regel
+* Versuchen Sie, die Ergebnisse mit LibreOffice, Microsoft Excel oder
+  eigenen R-Skripten nachzuvollziehen
+* Vergleichen sie die Extinktionskoeffizienten mit Werten aus
+  Lehrbüchern, z.B. Lampert and Sommer (2007), Abbildung 3.4
 
-## (Bonus) Recreate the plots in R
+## (Bonus) R-Scripte für die Vertikalprofile
 
-Below, the source code to calculate the 10°C isotherme, thermocline
-depth and 1% light depth, and create the plots shown in this
-application is provided. It is not required to understand this or to
-be able to recreate the plots in R. Nevertheless, some skills using
-the statistical programming language R can be advantageous in your
-future (academic) career and there are lots of good resources to learn
-it online.
+Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme,
+der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R
+oder einer anderen Skriptsprache ist kein Bestandteil dieser
+Übung. Kenntnisse in einer Datenanalysesprache wie R können
+allerddings für Ihre zukünftige (akademische oder praktische) Karriere
+nützlich sein.  Im INternet finden Sie zahlreiche gute Quellen für das
+Selbststudium.
+
 
 
 
@@ -254,9 +264,11 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
 p4  
 ```
 
-## References
+
+## Literaturverzeichis
 
 <!-- Lampert Sommer, Wikipedia, R packages /-->
+
 
 Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology
 of Lakes and Streams. Oxford university press.

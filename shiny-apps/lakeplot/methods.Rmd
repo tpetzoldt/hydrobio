@@ -89,8 +89,7 @@ that is equivalent to a linear regression, where the coefficient $b =
 y = a  - b \cdot x
 \]
 
-### Limnological interactions between light, temperature, oxygen pH
-    and conductivity
+### Limnological interactions between light, temperature, oxygen pH and conductivity
 
 In aquatic ecosystems, hydrophysical, chemical and biological
 variables are influenced by hydrology, meteorology and seasonal
@@ -122,7 +121,7 @@ You may consider the following keywords and questions:
 * Compare the extinction coefficients with data from a limnology
   textbook e.g., Lampert and Sommer (2007), Figure 3.4
 
-## (Bonus) recreate the plots in R
+## (Bonus) Recreate the plots in R
 
 Below, the source code to calculate the 10°C isotherme, thermocline
 depth and 1% light depth, and create the plots shown in this
