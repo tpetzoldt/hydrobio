@@ -106,7 +106,7 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   geom_point() + coord_flip() + scale_y_log10() +
   theme(legend.position="bottom") + xlab("Depth (m)")  +
   scale_x_continuous(trans = "reverse") +
-  geom_smooth(method = "lm", aes(col = "linear fit"))  + ggtitle("log(light) with linear fit") + 
+  geom_smooth(method = "lm", aes(col = "linear fit"))  + ggtitle("log(light) with linear fit") +
   geom_vline(data = data.frame(x = z_iso10, variable = "10 °C isotherme"),
              aes(xintercept = x, col = variable), linetype = "dashed") +
   geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
@@ -117,4 +117,4 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
             parse = FALSE, label = eqt, color = "black")
 
 # show the plot
-p4  
+p4
