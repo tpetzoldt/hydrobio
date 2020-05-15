@@ -106,7 +106,7 @@ You may consider the following keywords and questions:
 * and more ...
 
 
-## Tasks and Exercises
+## Exercises
 
 * Download data from the course home page and compare temperature and
   light profiles. Search the internet for background information about

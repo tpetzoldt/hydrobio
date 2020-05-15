@@ -115,7 +115,7 @@ Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte
 * usw.
 
 
-## Aufgaben und Übungen
+## Übungsaufgaben
 
 * Laden sie sich die Daten von der Kurs-Homepage herunter und
   vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im

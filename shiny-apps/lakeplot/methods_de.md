@@ -113,7 +113,7 @@ Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte
 * usw.
 
 
-## Aufgaben und Übungen
+## Übungsaufgaben
 
 * Laden sie sich die Daten von der Kurs-Homepage herunter und
   vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im
@@ -149,24 +149,28 @@ library(reshape2)
 library(ggplot2)
 library(rLakeAnalyzer)
 
+# an example data set can be downloaded from:
+# https://github.com/tpetzoldt/hydrobio/blob/master/data/lake_profile.xlsx
+
 # read in the data
-DF <- read_excel("data.xlsx")
+DF <- read_excel("lake_profile.xlsx")
 
 # reshape the data to "long" format
 df_long <- melt(DF, id.vars = "Depth")
 
 # add a column to create the different subplots
-df_long <- merge(df_long, data.frame(variable = c("Temp", "Oxygen", "pH", "Cond", "chla", "Turb",
-                                                  "Light"),
-                                     plot = c("Temp & O2", "Temp & O2", "pH", "Conductivity",
-                                              "Chlorophyl-a", "Turbidity", "Light")))
+df_long <- merge(df_long,
+    data.frame(variable = c("Temp", "Oxygen", "pH", "Cond", "chla", "Turb", "Light"),
+               plot = c("Temp & O2", "Temp & O2", "pH", "Conductivity",
+                        "Chlorophyl-a", "Turbidity", "Light")))
 
-# calculate 10Â°C isotherme
-z_iso10 <- approx(DF$Temp, DF$Depth, 10)$y
-
-## calculate thermocline using rLakeAnalyzer
 # first remove NAs (Not Available)from the data
 DF_valid <- na.omit(DF[c("Depth", "Temp")])
+
+# calculate 10Â°C isotherme
+z_iso10 <- approx(DF_valid$Temp, DF_valid$Depth, 10, ties=mean)$y
+
+## calculate thermocline using rLakeAnalyzer
 # calculate thermocline depth
 z_thermo <- thermo.depth(DF_valid$Temp, DF_valid$Depth)
 
@@ -251,7 +255,7 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
   geom_point() + coord_flip() + scale_y_log10() +
   theme(legend.position="bottom") + xlab("Depth (m)")  +
   scale_x_continuous(trans = "reverse") +
-  geom_smooth(method = "lm", aes(col = "linear fit"))  + ggtitle("log(light) with linear fit") + 
+  geom_smooth(method = "lm", aes(col = "linear fit"))  + ggtitle("log(light) with linear fit") +
   geom_vline(data = data.frame(x = z_iso10, variable = "10 Â°C isotherme"),
              aes(xintercept = x, col = variable), linetype = "dashed") +
   geom_vline(data = data.frame(x = z_light, variable = "1% light depth"),
@@ -262,7 +266,7 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
             parse = FALSE, label = eqt, color = "black")
 
 # show the plot
-p4  
+p4
 ```
 
 
