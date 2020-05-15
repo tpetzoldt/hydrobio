@@ -11,6 +11,8 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+[German translation](methods_de.html)
+
 ## Scientific background
 
 ### Thermocline and 10 degrees Celsius isotherme
@@ -43,7 +45,8 @@ C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\rig
 \frac{p}{1013.25}
 \]
 
-where $T$ is the temperature in degrees Celsius, and $p$ is the air pressure in hecto Pascal. The resulting saturation concentration is in units of gO/m$^3$ or mgO/l.
+where $T$ is the temperature in degrees Celsius, and $p$ is the air pressure in 
+hectopascal. The resulting saturation concentration is in units of gO/m$^3$ or mgO/l.
 
 ### Underwater light profile and euphotic zone
 
@@ -57,14 +60,14 @@ I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 
 where it is assumed that the light extinction coefficient
 $\varepsilon$ (in some books also named $k_d$) is constant over
-depth. This is of course an approximation for mainly two reaons:
+depth. This is of course an approximation for mainly two reasons:
 
 * light extinction depends on the light wavelength
 * color and particles are evenly distributed over depth
 
 The $\varepsilon$-value measured with an underwater light sensor is a
 mean value over depth and over a certain spectral range (the visible
-light or the photosynthetic active part).  so it can be called the
+light or the photosynthetic active part), so it can be called the
 "mean vertical and mean spectral extinction coefficient".
 
 It can be directly calculated from Lambert-Beer's law by linear
@@ -100,20 +103,19 @@ You may consider the following keywords and questions:
 
 ## Tasks and Exercises
 
-
 * Download data from the course home page and compare temperature and
   light profiles. Search the internet for background information about
   the particular Lakes and Reservoirs and discuss how the profile
   characteristics are related to the lakes. Can you find agreements and
   disagreements? Are they plausible or surprising?
 * Compare the rLakeAnalyzer thermocline with the 1K/m rule.
-* Try to reproduce the results with Excel, Libreoffice or an own R script.
+* Try to reproduce the results with Libreoffice, Excel or an own R script.
 * Compare the extinction coefficients with data from a limnology
   textbook e.g., Lampert and Sommer (2007), Figure 3.4
 
 ## (bonus) recreate the plots in R
 
-Below, the source code to calculate the 10°C isotherme, thermocline depth and 1% light depth, and create the plots shown in this application is provided. It is not required to understand this or to be able to recreate the plots in R. Nevertheless, some skill using the statistical programming language R can be advantageous in your futur (academic) career and there are lots of good resources to learn it online.
+Below, the source code to calculate the 10°C isotherme, thermocline depth and 1% light depth, and create the plots shown in this application is provided. It is not required to understand this or to be able to recreate the plots in R. Nevertheless, some skills using the statistical programming language R can be advantageous in your future (academic) career and there are lots of good resources to learn it online.
 
 
 ```{r code = readLines("recreate_plots.R"), eval = FALSE}
