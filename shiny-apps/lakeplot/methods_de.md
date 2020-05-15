@@ -11,16 +11,16 @@ bibliography: references.bib
 
 ## Wissenschaftliche Grundlagen
 
-### Die Thermokline und die 10 Grad Celsius-Isotherme
+### Thermokline und 10 Grad Celsius-Isotherme
 
-Die Thermokline in den Plots wird mit Hilfe des **R**-Pakets
+Für die Plots wird die Thermokline mit Hilfe des **R**-Pakets
 [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/)
 berechnet.
 
 Generell existieren für die Berechnung der Sprungsschicht ($z_{mix}$)
 bzw.  Thermokline unterschiedliche Definitionen und
 Berechnungsverfahren, siehe z.B.  [Winslow et
-al. 2019](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html)
+al. 2019](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html).
 
 Als einfache Faustregel wird oft die Tiefe angegeben, bei der der
 Temperaturgradient mehr als 1 Grad pro Meter (1K/m) beträgt.  Die
@@ -29,7 +29,7 @@ Verständnis der Funktiosweise belassen wir als Aufgabe (siehe unten).
 
 In der Realität sind Durchmischungstiefe bzw. Thermokline physikalisch
 komplex gesteuert. Außerdem sind die physikalischen Gradienten
-(z.B. Temperatur, Dichte, Turbulenz) eigentlich kontinuierlich und
+(z.B. Temperatur, Dichte, Turbulenz) in der Realität kontinuierlich und
 ändern sich dynamisch.  Feste Grenzen gibt es eigentlich nicht, als
 Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch
 sehr nützlich.  Ein weiterer noch einfacherer pragmatischer Indikator
@@ -39,7 +39,7 @@ ist die 10 Grad Celsius-Isotherme.
 
 Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen
 Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen
-Konzentration von Sauerstoffgesättigtem Wasser bei einer bestimmten
+Konzentration von sauerstoffgesättigtem Wasser bei einem bestimmten
 Luftdruck und einer bestimmten Temperatur.  Zur Abschätzung existieren
 verschiedene empirische Formeln, z.B. die recht einfache Formel von
 Mortimer (1981):
@@ -49,7 +49,7 @@ C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\rig
 \frac{p}{1013.25}
 \]
 
-mit Temperatur $T$ in Grad Celsius und Luftdruck $p$ in Hectopascal.
+mit Temperatur $T$ in Grad Celsius und Luftdruck $p$ in Hektopascal.
 Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g
 O/m$^3$ bzw. mg O/L.  Weitere Formeln und entsprechende
 Literaturangaben finden sich im R-Paket
@@ -65,12 +65,12 @@ unter der Wasseroberfläche $I_0$ über das Lambert-Beer'sche Gesetz:
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 \]
 
-wobei angenommen wird dass der Lichtextinktionskoeffizient
+Hierbei wird angenommen, dass der Lichtextinktionskoeffizient
 $\varepsilon$ (in manchen Büchern $k_d$ genannt) über die Tiefe
 konstant ist. Das ist aus mehreren Gründen eine Vereinfachung, weil:
 
 * die Lichtextinktion von der Wellenlänge abhängig ist und
-* Färbung und Partikel über im Wasser nicht gleichmäßig verteilt sind.
+* Färbung und Partikel im Wasser nicht gleichmäßig verteilt sind.
 
 Aus diesem Grund ist der mit Hilfe eines Unterwasserlichtsensors
 gemessene $\varepsilon$-Wert ein Mittelwert über die Tiefe und über
@@ -79,14 +79,15 @@ photosynthetisch aktiven Bereich (photosynthetisch aktive Strahlung
 PAR). Man spricht deshalb vom "mittleren vertikalen und mittleren
 spektralen Lichtextinktionskoeffizient".
 
-Der Koeffizient kann mit qHilfe der logarithmisch-transformierten Form
+Der Koeffizient kann mit Hilfe der logarithmisch-transformierten Form
 des Lambert-Beerschen Gesetzes:
 
 \[
 \ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
 \]
 
-bestimmt werden, analog einer linearen Regression mit $b = \varepsilon$:
+bestimmt werden, analog einer linearen Regression. Die Steigung $b$ der Gerade 
+entspricht  dem Extinktionskoeffizienten $\varepsilon$:
 
 \[
 y = a  - b \cdot x
@@ -95,26 +96,26 @@ y = a  - b \cdot x
 ### Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit
 
 Die hydrophysikalischen, chemischen und biologischen Variablen
-aquatischer Ökosysteme werden durch hydrologische, meteorologische und
+aquatischer Ökosysteme werden durch meteorologische, hydrologische und
 andere saisonale Faktoren gesteuert und beeinflussen sich
 gegenseitig. Eine umfassende Beschreibung würde den Rahmen dieses
 Textes überschreiten, deshalb wird auf die Vorlesung und die
 Lehrbücher verwiesen.
 
-Als Anregung für Wiederholung und Selbsrstudium dienen die folgenden Stichworte und Fragen:
+Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte und Fragen:
 
 * Saisonalität und Schichtungsmuster, z.B. dimiktisch, monomiktisch, polymiktisch
 * Einfluss der Schichtung auf die Sauerstoffverfügbarkeit und die Form des Sauerstoffprofils
-* Einfluss des Gewässertrophe  auf die Sauerstoffkurve
+* Einfluss des Gewässertrophie  auf die Sauerstoffkurve
 * Einfluss der photosynthetischen Aktivität auf pH-Wert und Leitfähigkeit (siehe Kalk-Kohlensäure-Gleichgewicht)
-* Einfluss der Klimaerwärmnug auf die Dauer der Schichtung
+* Einfluss der Klimaerwärmnug auf die Dauer der Sommerstratifikation
 * Einfluss der Schichtungsdauer auf den Sauerstoffhaushalt im Hypolimnion
 * usw.
 
 
 ## Aufgaben und Übungen
 
-* Laden sie sich die daten von der Kurs-Homepage herunter und
+* Laden sie sich die Daten von der Kurs-Homepage herunter und
   vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im
   Internet nach den Charakteristika der jeweiligen Seen
   bzw. Talsperren und diskutieren Sie den Zusammenhang zwischen
@@ -133,9 +134,9 @@ Als Anregung für Wiederholung und Selbsrstudium dienen die folgenden Stichworte
 Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme,
 der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R
 oder einer anderen Skriptsprache ist kein Bestandteil dieser
-Übung. Kenntnisse in einer Datenanalysesprache wie R können
-allerddings für Ihre zukünftige (akademische oder praktische) Karriere
-nützlich sein.  Im INternet finden Sie zahlreiche gute Quellen für das
+Übung. Andererseits können Kenntnisse in einer Datenanalysesprache wie R
+für Ihre zukünftige (akademische oder praktische) Karriere
+nützlich sein.  Im Internet finden Sie zahlreiche gute Quellen für das
 Selbststudium.
 
 

@@ -439,21 +439,21 @@ summary {
 
 <div id="wissenschaftliche-grundlagen" class="section level2">
 <h2>Wissenschaftliche Grundlagen</h2>
-<div id="die-thermokline-und-die-10-grad-celsius-isotherme" class="section level3">
-<h3>Die Thermokline und die 10 Grad Celsius-Isotherme</h3>
-<p>Die Thermokline in den Plots wird mit Hilfe des <strong>R</strong>-Pakets <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a> berechnet.</p>
-<p>Generell existieren für die Berechnung der Sprungsschicht (<span class="math inline">\(z_{mix}\)</span>) bzw. Thermokline unterschiedliche Definitionen und Berechnungsverfahren, siehe z.B. <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">Winslow et al. 2019</a></p>
+<div id="thermokline-und-10-grad-celsius-isotherme" class="section level3">
+<h3>Thermokline und 10 Grad Celsius-Isotherme</h3>
+<p>Für die Plots wird die Thermokline mit Hilfe des <strong>R</strong>-Pakets <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a> berechnet.</p>
+<p>Generell existieren für die Berechnung der Sprungsschicht (<span class="math inline">\(z_{mix}\)</span>) bzw. Thermokline unterschiedliche Definitionen und Berechnungsverfahren, siehe z.B. <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">Winslow et al. 2019</a>.</p>
 <p>Als einfache Faustregel wird oft die Tiefe angegeben, bei der der Temperaturgradient mehr als 1 Grad pro Meter (1K/m) beträgt. Die vorliegende App nutzt den <strong>rLakeAnalyzer</strong>-Algorithmus, das Verständnis der Funktiosweise belassen wir als Aufgabe (siehe unten).</p>
-<p>In der Realität sind Durchmischungstiefe bzw. Thermokline physikalisch komplex gesteuert. Außerdem sind die physikalischen Gradienten (z.B. Temperatur, Dichte, Turbulenz) eigentlich kontinuierlich und ändern sich dynamisch. Feste Grenzen gibt es eigentlich nicht, als Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch sehr nützlich. Ein weiterer noch einfacherer pragmatischer Indikator ist die 10 Grad Celsius-Isotherme.</p>
+<p>In der Realität sind Durchmischungstiefe bzw. Thermokline physikalisch komplex gesteuert. Außerdem sind die physikalischen Gradienten (z.B. Temperatur, Dichte, Turbulenz) in der Realität kontinuierlich und ändern sich dynamisch. Feste Grenzen gibt es eigentlich nicht, als Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch sehr nützlich. Ein weiterer noch einfacherer pragmatischer Indikator ist die 10 Grad Celsius-Isotherme.</p>
 </div>
 <div id="sauerstoffsättigungskonzentration" class="section level3">
 <h3>Sauerstoffsättigungskonzentration</h3>
-<p>Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen Konzentration von Sauerstoffgesättigtem Wasser bei einer bestimmten Luftdruck und einer bestimmten Temperatur. Zur Abschätzung existieren verschiedene empirische Formeln, z.B. die recht einfache Formel von Mortimer (1981):</p>
+<p>Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen Konzentration von sauerstoffgesättigtem Wasser bei einem bestimmten Luftdruck und einer bestimmten Temperatur. Zur Abschätzung existieren verschiedene empirische Formeln, z.B. die recht einfache Formel von Mortimer (1981):</p>
 <p><span class="math display">\[
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
 \frac{p}{1013.25}
 \]</span></p>
-<p>mit Temperatur <span class="math inline">\(T\)</span> in Grad Celsius und Luftdruck <span class="math inline">\(p\)</span> in Hectopascal. Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g O/m<span class="math inline">\(^3\)</span> bzw. mg O/L. Weitere Formeln und entsprechende Literaturangaben finden sich im R-Paket <a href="https://CRAN.R-project.org/package=marelac">marelac</a>.</p>
+<p>mit Temperatur <span class="math inline">\(T\)</span> in Grad Celsius und Luftdruck <span class="math inline">\(p\)</span> in Hektopascal. Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g O/m<span class="math inline">\(^3\)</span> bzw. mg O/L. Weitere Formeln und entsprechende Literaturangaben finden sich im R-Paket <a href="https://CRAN.R-project.org/package=marelac">marelac</a>.</p>
 </div>
 <div id="unterwasserlichtprofil-und-euphotische-zone" class="section level3">
 <h3>Unterwasserlichtprofil und euphotische Zone</h3>
@@ -461,31 +461,31 @@ C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\rig
 <p><span class="math display">\[
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 \]</span></p>
-<p>wobei angenommen wird dass der Lichtextinktionskoeffizient <span class="math inline">\(\varepsilon\)</span> (in manchen Büchern <span class="math inline">\(k_d\)</span> genannt) über die Tiefe konstant ist. Das ist aus mehreren Gründen eine Vereinfachung, weil:</p>
+<p>Hierbei wird angenommen, dass der Lichtextinktionskoeffizient <span class="math inline">\(\varepsilon\)</span> (in manchen Büchern <span class="math inline">\(k_d\)</span> genannt) über die Tiefe konstant ist. Das ist aus mehreren Gründen eine Vereinfachung, weil:</p>
 <ul>
 <li>die Lichtextinktion von der Wellenlänge abhängig ist und</li>
-<li>Färbung und Partikel über im Wasser nicht gleichmäßig verteilt sind.</li>
+<li>Färbung und Partikel im Wasser nicht gleichmäßig verteilt sind.</li>
 </ul>
 <p>Aus diesem Grund ist der mit Hilfe eines Unterwasserlichtsensors gemessene <span class="math inline">\(\varepsilon\)</span>-Wert ein Mittelwert über die Tiefe und über einen bestimmten Spektralbereich, z.B. das sichtbare Licht oder den photosynthetisch aktiven Bereich (photosynthetisch aktive Strahlung PAR). Man spricht deshalb vom “mittleren vertikalen und mittleren spektralen Lichtextinktionskoeffizient”.</p>
-<p>Der Koeffizient kann mit qHilfe der logarithmisch-transformierten Form des Lambert-Beerschen Gesetzes:</p>
+<p>Der Koeffizient kann mit Hilfe der logarithmisch-transformierten Form des Lambert-Beerschen Gesetzes:</p>
 <p><span class="math display">\[
 \ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
 \]</span></p>
-<p>bestimmt werden, analog einer linearen Regression mit <span class="math inline">\(b = \varepsilon\)</span>:</p>
+<p>bestimmt werden, analog einer linearen Regression. Die Steigung <span class="math inline">\(b\)</span> der Gerade entspricht dem Extinktionskoeffizienten <span class="math inline">\(\varepsilon\)</span>:</p>
 <p><span class="math display">\[
 y = a  - b \cdot x
 \]</span></p>
 </div>
 <div id="limnologische-wechselwirkungen-zwischen-licht-temperatur-sauerstoff-und-leitfähigkeit" class="section level3">
 <h3>Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit</h3>
-<p>Die hydrophysikalischen, chemischen und biologischen Variablen aquatischer Ökosysteme werden durch hydrologische, meteorologische und andere saisonale Faktoren gesteuert und beeinflussen sich gegenseitig. Eine umfassende Beschreibung würde den Rahmen dieses Textes überschreiten, deshalb wird auf die Vorlesung und die Lehrbücher verwiesen.</p>
-<p>Als Anregung für Wiederholung und Selbsrstudium dienen die folgenden Stichworte und Fragen:</p>
+<p>Die hydrophysikalischen, chemischen und biologischen Variablen aquatischer Ökosysteme werden durch meteorologische, hydrologische und andere saisonale Faktoren gesteuert und beeinflussen sich gegenseitig. Eine umfassende Beschreibung würde den Rahmen dieses Textes überschreiten, deshalb wird auf die Vorlesung und die Lehrbücher verwiesen.</p>
+<p>Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte und Fragen:</p>
 <ul>
 <li>Saisonalität und Schichtungsmuster, z.B. dimiktisch, monomiktisch, polymiktisch</li>
 <li>Einfluss der Schichtung auf die Sauerstoffverfügbarkeit und die Form des Sauerstoffprofils</li>
-<li>Einfluss des Gewässertrophe auf die Sauerstoffkurve</li>
+<li>Einfluss des Gewässertrophie auf die Sauerstoffkurve</li>
 <li>Einfluss der photosynthetischen Aktivität auf pH-Wert und Leitfähigkeit (siehe Kalk-Kohlensäure-Gleichgewicht)</li>
-<li>Einfluss der Klimaerwärmnug auf die Dauer der Schichtung</li>
+<li>Einfluss der Klimaerwärmnug auf die Dauer der Sommerstratifikation</li>
 <li>Einfluss der Schichtungsdauer auf den Sauerstoffhaushalt im Hypolimnion</li>
 <li>usw.</li>
 </ul>
@@ -494,7 +494,7 @@ y = a  - b \cdot x
 <div id="aufgaben-und-übungen" class="section level2">
 <h2>Aufgaben und Übungen</h2>
 <ul>
-<li>Laden sie sich die daten von der Kurs-Homepage herunter und vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im Internet nach den Charakteristika der jeweiligen Seen bzw. Talsperren und diskutieren Sie den Zusammenhang zwischen beobachteten Profilen und den Seeneigenschaften. Gibt es Übereinstimmungen oder Widersprüche? Sind diese plausibel oder überraschend?</li>
+<li>Laden sie sich die Daten von der Kurs-Homepage herunter und vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im Internet nach den Charakteristika der jeweiligen Seen bzw. Talsperren und diskutieren Sie den Zusammenhang zwischen beobachteten Profilen und den Seeneigenschaften. Gibt es Übereinstimmungen oder Widersprüche? Sind diese plausibel oder überraschend?</li>
 <li>Vergleichen Sie die vom rLakeAnalyzer abgeschätzten Werte der Thermokline mit der 1K/m-Regel</li>
 <li>Versuchen Sie, die Ergebnisse mit LibreOffice, Microsoft Excel oder eigenen R-Skripten nachzuvollziehen</li>
 <li>Vergleichen sie die Extinktionskoeffizienten mit Werten aus Lehrbüchern, z.B. Lampert and Sommer (2007), Abbildung 3.4</li>
@@ -502,7 +502,7 @@ y = a  - b \cdot x
 </div>
 <div id="bonus-r-scripte-für-die-vertikalprofile" class="section level2">
 <h2>(Bonus) R-Scripte für die Vertikalprofile</h2>
-<p>Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme, der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R oder einer anderen Skriptsprache ist kein Bestandteil dieser Übung. Kenntnisse in einer Datenanalysesprache wie R können allerddings für Ihre zukünftige (akademische oder praktische) Karriere nützlich sein. Im INternet finden Sie zahlreiche gute Quellen für das Selbststudium.</p>
+<p>Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme, der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R oder einer anderen Skriptsprache ist kein Bestandteil dieser Übung. Andererseits können Kenntnisse in einer Datenanalysesprache wie R für Ihre zukünftige (akademische oder praktische) Karriere nützlich sein. Im Internet finden Sie zahlreiche gute Quellen für das Selbststudium.</p>
 <pre class="r"><code># required libraries
 library(readxl)
 library(reshape2)
