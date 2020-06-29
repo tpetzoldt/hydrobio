@@ -27,7 +27,8 @@ shinyServer(function(input, output, session) {
       lastClrBtn <<- input$clrBtn
 
       DF <- isolate(hot_to_r(input$hot))
-      DF[,] <- as.numeric(NA) # as.numeric to avoid boolean
+      DF <- data.frame(Date = as.character(""),
+                          Temp = as.numeric(NA)) # as.numeric to avoid boolean
     } else  if (add10 > lastAddRows) {
         lastAddRows <<- add10
 
