@@ -5,14 +5,15 @@ library("reshape2")
 library("ggplot2")
 library("gridExtra")
 library("Kendall")
+library("mgcv")
 
 lastClrBtn   <- 0
 lastAddRows  <- 0
 lastInputRun <- 0
 
 ## DF structure and example data
-DF <- data.frame(Date = c(paste0("200", 0:9, "-01-01"), paste0("20", 10:15, "-01-01")),
-                 Temp = 9 + 0:15*0.04 + rnorm(16,0, 0.5)
+DF <- data.frame(x = c(paste0("200", 0:9, "-01-01"), paste0("20", 10:15, "-01-01")),
+                 y = 9 + 0:15*0.04 + rnorm(16,0, 0.5)
                  )
 
 shinyServer(function(input, output, session) {
@@ -27,8 +28,8 @@ shinyServer(function(input, output, session) {
       lastClrBtn <<- input$clrBtn
 
       DF <- isolate(hot_to_r(input$hot))
-      DF <- data.frame(Date = as.character(""),
-                          Temp = as.numeric(NA)) # as.numeric to avoid boolean
+      DF <- data.frame(x = as.character(""),
+                          y = as.numeric(NA)) # as.numeric to avoid boolean
     } else  if (add10 > lastAddRows) {
         lastAddRows <<- add10
 
@@ -55,44 +56,52 @@ shinyServer(function(input, output, session) {
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
+  
+  get_DF <- reactive({
+    DF <- hot_to_r(input$hot)
+    # check if input is in iso8601 date format
+    is_date <- grepl("\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d.*", DF$x[1])
+    if(is_date) {
+      DF$x <- as.POSIXct(DF$x)
+    } else {
+      DF$x <- as.numeric(DF$x)
+    }
+    DF$mode <- "Obs"
+    DF$tile <- "1 - Time series"
+    
+    if(input$smooth == "lm") {
+      lm <- lm(y ~ x, DF)
+    } else if(input$smooth == "loess"){
+      if(is_date) {
+        DFn <- DF
+        DFn$x <- as.numeric(DFn$x)
+        lm <- loess(y ~ x, DFn)
+      } else {
+        lm <- loess(y ~ x, DF)
+      }
+    } 
+    
+    
+    DF <- rbind(DF, data.frame(x = DF$x,
+                               y = residuals(lm),
+                               mode = rep("res", length(DF$x)),
+                               tile = rep("2 - Residuals", length(DF$x))))
+    
+    return(DF)
+  })
+  
   output$temp_ts <- renderPlotly({
     input$runBtn
     isolate({
       if (!is.null(input$hot)) {
-        DF <- hot_to_r(input$hot)
-        DF$Date <- as.POSIXct(DF$Date)
-        DF$mode <- "Obs"
-        DF$tile <- "1 - Temperature"
-        
-        lm <- lm(Temp ~ Date, DF)
-        
-        DF_l <- rbind(DF, data.frame(Date = DF$Date,
-                                   Temp = predict(lm, DF),
-                                   mode = rep("lm", length(DF$Date)),
-                                   tile = rep("1 - Temperature", length(DF$Date))))
-        
-        DF_l <- rbind(DF_l, data.frame(Date = DF$Date,
-                                       Temp = residuals(lm),
-                                       mode = rep("res", length(DF$Date)),
-                                       tile = rep("2 - Residuals", length(DF$Date))))
+        DF <- get_DF()
 
-        funtext <- data.frame(
-          xpos = quantile(DF$Date, 0.2),
-          ypos =  quantile(DF$Temp, 0.95),
-          annotateText = paste0("y = ", signif(coef(lm)[1], 2),
-                                " + ",
-                                signif(coef(lm)[2]*86400*365.25, 2), " * x"),
-          mode = "lm",
-          tile = "1 - Temperature")
-        
         p1 <- ggplot() +
-          geom_hline(data = data.frame(tile = "2 - Residuals"), aes(yintercept = 0)) +
-          geom_point(data = DF_l[DF_l$mode != "lm", ], aes(x = Date, y = Temp, col = mode)) +
-          geom_line(data = DF_l[DF_l$mode != "res", ], aes(x = Date, y = Temp, col = mode)) +
-          facet_wrap(~tile, scales = "free") + 
-          geom_text(data = funtext, aes(x = xpos, y = ypos,
-                                        label = annotateText, col = mode),
-                    parse = TRUE) 
+          geom_hline(data = data.frame(tile = "2 - Residuals"), aes(yintercept = 0), col = "grey") +
+          geom_point(data = DF, aes(x = x, y = y, col = mode)) +
+          geom_line(data = DF[DF$mode == "Obs", ], aes(x = x, y = y, col = mode)) +
+          geom_smooth(data = DF[DF$mode == "Obs", ],aes(x = x, y = y), method = input$smooth) +
+          facet_wrap(~tile, scales = "free") 
         ggplotly(p1)
       } else {
         NULL # return NULL if input$hot is not yet initialized
@@ -106,17 +115,11 @@ shinyServer(function(input, output, session) {
     input$runBtn
     isolate({
       if (!is.null(input$hot)) {
-        DF <- hot_to_r(input$hot)
-        DF$Date <- as.POSIXct(DF$Date)
-        
-        lm <- lm(Temp ~ Date, DF)
-        
-        DF$lm <- predict(lm, DF)
-        
-        DF$res <- residuals(lm)
-        AC <- acf(DF$res, plot = FALSE)
+        DF <- get_DF()
+
+        AC <- acf(DF$y[DF$mode == "res"], plot = FALSE)
         conf.level <- 0.95
-        ciline <- qnorm((1 - conf.level)/2)/sqrt(length(DF$Temp))
+        ciline <- qnorm((1 - conf.level)/2)/sqrt(length(DF$y))
       p2 <- ggplot(data.frame(acf = AC$acf,
                               lag = AC$lag), aes(x = lag, y = acf)) +
         geom_hline(aes(yintercept = 0)) +
@@ -134,22 +137,34 @@ shinyServer(function(input, output, session) {
   
   sumTable <-  reactive({
     
-    input$runBtn
-    DF <- hot_to_r(input$hot)
-    DF$Date <- as.POSIXct(DF$Date)
-    ts <- ts(DF$Temp, deltat = mean(diff(as.numeric(DF$Date)))/(365.25*24*3600))
+    DF <- get_DF()
+    if(is.numeric(DF$x)) {
+      ts <- ts(DF$y[DF$mode == "Obs"], deltat = mean(diff(DF$x[DF$mode == "Obs"])))
+    } else {
+      ts <- ts(DF$y[DF$mode == "Obs"],
+               deltat = mean(diff(as.numeric(DF$x[DF$mode == "Obs"])))/(365.25*24*3600))
+    }
     ken <- MannKendall(ts)
-    lm <- lm(Temp ~ Date, DF)
+    lm <- lm(y ~ x, DF[DF$mode == "Obs", ])
     
     setNames(data.frame(c("Linear trend",
                           "Mann Kendall test"),
                         c("Slope", "Tau"),
-                        c(lm$coefficients[2]*(365.25*24*3600), ken$tau[1]),
+                        c(lm$coefficients[2]*ifelse(is.numeric(DF$x), 1, (365.25*24*3600)),
+                          ken$tau[1]),
                         c(summary(lm)$coefficients[2,4], ken$sl[1])),
              c("Method", "Measure","Value", "p.value"))
   
   })
   
-  output$sumTable <- renderTable(sumTable(), digits = 4)
+  output$sumTable <- renderTable({
+    input$runBtn
+    isolate({
+      if (!is.null(input$hot)) {
+        sumTable()
+      } else {
+        NULL
+      }
+     })}, digits = 4)
   
 })
