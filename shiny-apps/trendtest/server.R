@@ -5,6 +5,7 @@ library("reshape2")
 library("ggplot2")
 library("gridExtra")
 library("Kendall")
+library("xts")
 library("mgcv")
 
 lastClrBtn   <- 0
@@ -172,11 +173,13 @@ shinyServer(function(input, output, session) {
     
     DF <- get_DF()
     if(is.numeric(DF$x)) {
-      ts <- ts(DF$y[DF$mode == "Obs"], deltat = mean(diff(DF$x[DF$mode == "Obs"])))
+      ts <- xts(DF$y[DF$mode == "Obs"], as.POSIXct(DF$x[DF$mode == "Obs"],
+                                                   origin = "2000-01-01"))
     } else {
-      ts <- ts(DF$y[DF$mode == "Obs"],
-               deltat = mean(diff(as.numeric(DF$x[DF$mode == "Obs"])))/(365.25*24*3600))
+      ts <- xts(DF$y[DF$mode == "Obs"], DF$x[DF$mode == "Obs"])
     }
+    
+    
     ken <- MannKendall(ts)
     lm <- lm(y ~ x, DF[DF$mode == "Obs", ])
     
