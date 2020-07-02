@@ -25,8 +25,8 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Plots",
                  plotlyOutput("temp_ts"),
-                 plotlyOutput("resdist"),
                  plotlyOutput("acf"),
+                 plotlyOutput("resdist"),
                  tableOutput("sumTable")
           #verbatimTextOutput("summary")
         ),

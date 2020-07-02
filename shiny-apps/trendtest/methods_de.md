@@ -16,28 +16,28 @@ Ein einfaches lineares Regressionsmodell kann als:
 
   $$ \hat{y}_i = a + b \cdot x_i $$
 
-geschrieben werden. Wobei $\hat{y}_i$ die geschetzten WErte der abhängigen Variable, $x_i$ die unabhängige Variable, $a$ der Schnittpunkt mit der y-Achse und $b$ die Steigung der Geraden sind. Um die Parameter $a$ und $b$ zu ermitteln wird normalerweiße die Summe der Abweichugnsquadrate minimiert.
+geschrieben werden. Wobei $\hat{y}_i$ die geschätzten Werte der abhängigen Variable, $x_i$ die unabhängige Variable, $a$ der Schnittpunkt mit der y-Achse und $b$ die Steigung der Geraden sind. Um die Parameter $a$ und $b$ zu ermitteln wird normalerweise die Summe der Abweichungsquadrate minimiert.
 
 #### Residuen
 
-Als Ressiduen $r_i = y_i - \hat{y}_i$ werden die Differenz zwischen den gemessenen werten $y_i$ und den geschätzten Werten $\hat{y}_i$ bezeichnet."
+Als Ressiduen $r_i = y_i - \hat{y}_i$ werden die Differenz zwischen den gemessenen werten $y_i$ und den geschätzten Werten $\hat{y}_i$ bezeichnet.
 
-#### Vorraussetzungen linearer Trend
+#### Voraussetzungen linearer Trend
 
-Das lineare Modell geht davon aus dass:
+Das einfache lineare Modell geht davon aus dass:
 
- 1. Die Unabhängige Variable $x$ ist deterministisch (fest gegeben)
+ 1. Die unabhängige Variable $x$ ist deterministisch (fest gegeben)
  2. Für jedes $x_i$ ist $y_i$ ist eine Zufallsvariable
- 3. $y$ ist unabhängig (keine Autokorelation) und identisch verteilt (jedes $y_i$ hat die gleiche Standardverteilung)
- 4. Die Residuen $r$ sind normalverteilt
+ 3. Die $y_$ sind unabhängig voneinander (keine Autokorelation) und identisch verteilt (jedes $y_i$ hat die gleiche Verteilung)
+ 4. Die Residuen $r_i$ sind normalverteilt
   
 ### LOESS Glätter
 
-LOESS steht für locally estimated scatterplot smoothing, zu deutsch: lokal gewichtete Regression-Streudiagramm-Glätter. Glätter werden verwendet,um eine Ausgleichslinie durch einen verrauschten Datensatz zu erhalten, z.B. zur bloßen Visualisierung des  „Trends“  in  einem  Diagramm,  zur  Abtastung  des  mittleren  Verlaufes  oder  auch  zur  Schätzung  von Vertrauensintervallen.
+LOESS steht für locally estimated scatterplot smoothing, zu deutsch: lokal gewichteter Regressions-Streudiagramm-Glätter. Glätter werden verwendet,um eine Ausgleichslinie durch einen verrauschten Datensatz zu erhalten, z.B. zur bloßen Visualisierung des  "Trends"  in  einem  Diagramm,  zur  Abtastung  des  mittleren  Verlaufes  oder  auch  zur  Schätzung  von Vertrauensintervallen.
 
-### MannKendall Test
+### Mann-Kendall Test
 
-Der MannKendall Test ist ein Test für monotone Trends in einer Zeitreihe, basierend auf der Kendall Rang Korrelation der Zeitreihe. Dabei wird die Stärke des monotonen Zusammenhangs zwischen einer Abhängigen und Unabhängigen Variable getestet. Der Test ist besonders in den Umweltwissenschaften beliebt, da die Bewertungs-Funktion $S$ für kleine $n$ nahezu normalverteilt ist.
+Der Mann-Kendall Test ist ein Test für monotone Trends in einer Zeitreihe, basierend auf der Kendall Rangkorrelation der Zeitreihe. Dabei wird die Stärke des monotonen Zusammenhangs zwischen einer abhängigen und unabhängigen Variable getestet. Der Test ist besonders in den Umweltwissenschaften beliebt, da die Bewertungs-Funktion $S$ für kleine $n$ nahezu normalverteilt ist.
 
 ## Übungsaufgaben
 
