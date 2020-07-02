@@ -33,7 +33,7 @@ Das lineare Modell geht davon aus dass:
   
 ### LOESS Glätter
 
-LOESS steht für locally estimated scatterplot smoothing, zu deutsch: lokal gewichtete Regression-Streudiagramm-Glätter. Glätter werden verwendet,um eine Ausgleichslinie durch einen verrauschten Datensatz zu erhalten, z.B. zur bloßen Visualisierungdes  „Trends“  in  einem  Diagramm,  zur  Abtastung  des  mittleren  Verlaufes  oder  auch  zur  Schätzung  vonVertrauensintervallen.
+LOESS steht für locally estimated scatterplot smoothing, zu deutsch: lokal gewichtete Regression-Streudiagramm-Glätter. Glätter werden verwendet,um eine Ausgleichslinie durch einen verrauschten Datensatz zu erhalten, z.B. zur bloßen Visualisierung des  „Trends“  in  einem  Diagramm,  zur  Abtastung  des  mittleren  Verlaufes  oder  auch  zur  Schätzung  von Vertrauensintervallen.
 
 ### MannKendall Test
 
