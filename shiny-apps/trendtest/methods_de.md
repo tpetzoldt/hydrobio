@@ -37,7 +37,7 @@ LOESS steht für locally estimated scatterplot smoothing, zu deutsch: lokal gewi
 
 ### MannKendall Test
 
-Der MannKendall Test ist ein test für monotone Trends in einer Zeitreihe, basierend auf der Kendall Rang Korrelation der Zeitreihe. Dabei wird die Stärke des monotonen Zusammenhangs zwischen einer Abhängigen und Unabhängigen variable getestet. Der Test ist besonders in Umweltwissenschaften beliebt, da die Bewertungs-Funktion $S$ für kleine $n$ nahezu normalverteilt ist.
+Der MannKendall Test ist ein Test für monotone Trends in einer Zeitreihe, basierend auf der Kendall Rang Korrelation der Zeitreihe. Dabei wird die Stärke des monotonen Zusammenhangs zwischen einer Abhängigen und Unabhängigen Variable getestet. Der Test ist besonders in den Umweltwissenschaften beliebt, da die Bewertungs-Funktion $S$ für kleine $n$ nahezu normalverteilt ist.
 
 ## Übungsaufgaben
 
@@ -45,6 +45,8 @@ Der MannKendall Test ist ein test für monotone Trends in einer Zeitreihe, basie
 
 ## Literaturverzeichis
 
+Hipel, K.W. and McLeod, A.I., (2005). Time Series Modelling of Water Resources and Environmental Systems. Electronic reprint of our book orginally published in 1994. http://www.stats.uwo.ca/faculty/aim/1994Book/.
+
 Kendall, M.G. (1976). Rank Correlation Methods. 4th Ed. Griffin.
 
-Hipel, K.W. and McLeod, A.I., (2005). Time Series Modelling of Water Resources and Environmental Systems. Electronic reprint of our book orginally published in 1994. http://www.stats.uwo.ca/faculty/aim/1994Book/.
+Petzold, T. (2019). Datenanalyse mit R Ausgewählte Beispiele - Skript. https://wwwpub.zih.tu-dresden.de/~petzoldt/elements_de.pdf
