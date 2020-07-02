@@ -31,7 +31,7 @@ shinyUI(fluidPage(
           #verbatimTextOutput("summary")
         ),
 
-        tabPanel("Aufgaben (DE)",
+        tabPanel("Hintergrund",
                  withMathJax(includeMarkdown("methods_de.md")) # works, but has issues with references and some math
 
         ),

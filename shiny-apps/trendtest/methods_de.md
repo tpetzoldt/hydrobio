@@ -28,7 +28,7 @@ Das einfache lineare Modell geht davon aus dass:
 
  1. Die unabhängige Variable $x$ ist deterministisch (fest gegeben)
  2. Für jedes $x_i$ ist $y_i$ ist eine Zufallsvariable
- 3. Die $y_$ sind unabhängig voneinander (keine Autokorelation) und identisch verteilt (jedes $y_i$ hat die gleiche Verteilung)
+ 3. Die $y_i$ sind unabhängig voneinander (keine Autokorelation) und identisch verteilt (jedes $y_i$ hat die gleiche Verteilung)
  4. Die Residuen $r_i$ sind normalverteilt
   
 ### LOESS Glätter

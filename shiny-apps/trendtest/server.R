@@ -59,8 +59,12 @@ shinyServer(function(input, output, session) {
   
   get_DF <- reactive({
     DF <- hot_to_r(input$hot)
+    DF <- na.exclude(DF)
     # check if input is in iso8601 date format
     is_date <- grepl("\\d\\d\\d\\d\\-\\d\\d\\-\\d\\d.*", DF$x[1])
+    if(is_date) {
+      DF <- DF[DF$x != "", ]
+    }
     if(is_date) {
       DF$x <- as.POSIXct(DF$x)
     } else {
@@ -152,9 +156,9 @@ shinyServer(function(input, output, session) {
 
         p <- ggplot(DF[DF$mode == "res", ], aes(x = y)) +
           geom_histogram(aes(y = ..density..), bins = round(length(DF$x[DF$mode == "Obs"])/3),
-                         fill = "bisque3", col = "darkgrey", lwd = 1.25) + 
-          geom_density(aes(y=..density..), col = "blue4", lwd = 1.5) + 
-          geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed", lwd = 1.5) +
+                         fill = "bisque3", col = "darkgrey") + 
+          geom_density(aes(y=..density..), col = "blue4", lwd = 1.2) + 
+          geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed", lwd = 1.2) +
           xlab("Residuals") + ggtitle("Distribution residuals")
         ggplotly(p)
       } else {
