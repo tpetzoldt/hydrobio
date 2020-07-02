@@ -101,7 +101,7 @@ shinyServer(function(input, output, session) {
           geom_point(data = DF, aes(x = x, y = y, col = mode)) +
           geom_line(data = DF[DF$mode == "Obs", ], aes(x = x, y = y, col = mode)) +
           geom_smooth(data = DF[DF$mode == "Obs", ],aes(x = x, y = y), method = input$smooth) +
-          facet_wrap(~tile, scales = "free") 
+          facet_wrap(~tile, scales = "free") + theme(legend.position = "none")
         ggplotly(p1)
       } else {
         NULL # return NULL if input$hot is not yet initialized
@@ -128,6 +128,35 @@ shinyServer(function(input, output, session) {
         geom_hline(aes(yintercept = -ciline), linetype = 2, color = 'darkblue') +
         ggtitle("Autocorelation residuals")
       ggplotly(p2)
+      } else {
+        NULL # return NULL if input$hot is not yet initialized
+      }
+    })
+  })
+  
+  
+  output$resdist <- renderPlotly({
+    input$runBtn
+    isolate({
+      if (!is.null(input$hot)) {
+        DF <- get_DF()
+        
+        dist <- data.frame(x = seq(min(DF$y[DF$mode == "res"]),
+                                   max(DF$y[DF$mode == "res"]),
+                                   length.out = 200),
+                           y = dnorm(seq(min(DF$y[DF$mode == "res"]),
+                                         max(DF$y[DF$mode == "res"]),
+                                         length.out = 200),
+                                     mean(DF$y[DF$mode == "res"]),
+                                     sd(DF$y[DF$mode == "res"])))
+
+        p <- ggplot(DF[DF$mode == "res", ], aes(x = y)) +
+          geom_histogram(aes(y = ..density..), bins = round(length(DF$x[DF$mode == "Obs"])/3),
+                         fill = "bisque3", col = "darkgrey", lwd = 1.25) + 
+          geom_density(aes(y=..density..), col = "blue4", lwd = 1.5) + 
+          geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed", lwd = 1.5) +
+          xlab("Residuals") + ggtitle("Distribution residuals")
+        ggplotly(p)
       } else {
         NULL # return NULL if input$hot is not yet initialized
       }
