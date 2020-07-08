@@ -15,7 +15,7 @@ lastInputRun <- 0
 ## DF structure and example data
 DF <- data.frame(
   x = c(paste0("200", 0:9, "-01-01"), paste0("20", 10:15, "-01-01")),
-  y = 9 + 0:15*0.04 + rnorm(16,0, 0.5)
+  y = 9 + 0:15 * 0.04 + rnorm(16, 0, 0.5)
 )
 
 shinyServer(function(input, output, session) {
@@ -129,7 +129,7 @@ shinyServer(function(input, output, session) {
         geom_segment(mapping = aes(xend = lag, yend = 0)) +
         geom_hline(aes(yintercept = ciline), linetype = 2, color = 'darkblue') +
         geom_hline(aes(yintercept = -ciline), linetype = 2, color = 'darkblue') +
-        ggtitle("Autocorelation residuals")
+        ggtitle("Autocorelation of residuals")
         ggplotly(p2)
       } else {
         NULL # return NULL if input$hot is not yet initialized
@@ -156,9 +156,9 @@ shinyServer(function(input, output, session) {
         p <- ggplot(DF[DF$mode == "res", ], aes(x = y)) +
         geom_histogram(aes(y = ..density..), bins = round(length(DF$x[DF$mode == "Obs"])/3),
                        fill = "bisque3", col = "darkgrey") +
-        geom_density(aes(y=..density..), col = "blue4", lwd = 1.2) +
-        geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed", lwd = 1.2) +
-        xlab("Residuals") + ggtitle("Distribution residuals")
+        geom_density(aes(y=..density..), col = "blue4") +
+        geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed") +
+        xlab("Residuals") + ggtitle("Distribution of residuals")
         ggplotly(p)
       } else {
         NULL # return NULL if input$hot is not yet initialized
@@ -180,13 +180,17 @@ shinyServer(function(input, output, session) {
     ken <- MannKendall(ts)
     lm <- lm(y ~ x, DF[DF$mode == "Obs", ])
 
+    print(summary(lm))
+
     setNames(data.frame(c("Linear trend", "Mann Kendall test"),
                         c("Slope", "Tau"),
                         c(lm$coefficients[2] *
                             ifelse(is.numeric(DF$x), 1, (365.25*24*3600)),
                           ken$tau[1]),
+                        c(summary(lm)$coefficients[2, 2] *
+                            ifelse(is.numeric(DF$x), 1, (365.25*24*3600)), NA),
                         c(summary(lm)$coefficients[2, 4], ken$sl[1])),
-             c("Method", "Measure","Value", "p.value"))
+             c("Method", "Measure","Value", "Std. err", "p-value"))
   })
 
   output$sumTable <- renderTable({
