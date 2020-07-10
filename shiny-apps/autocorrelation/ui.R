@@ -25,6 +25,9 @@ shinyUI(fluidPage(
                 plotOutput("plot2"),
                 plotOutput("plot3")
                  #verbatimTextOutput("summary")
+        ),
+        tabPanel("Info",
+                 includeHTML("info.html")
         )
         )
       )
