@@ -75,10 +75,15 @@ shinyServer(function(input, output, session) {
     plot(dat$x, dat$y, pch = 16, xlab = "x", ylab = "y", type = "b")
     lines(dat$x[(1+lag):length(dat$x)], dat$y[1:(length(dat$x) - lag)], col = 2)
     points(dat$x[(1+lag):length(dat$x)], dat$y[1:(length(dat$x) - lag)], col = 2, pch = 16)
-    if(input$arrow){
+    if(input$arrow) {
       arrows(x1 = dat$x[(1+lag):length(dat$x)], x0 = dat$x[1:(length(dat$x) - lag)],
             y0 = dat$y[1:(length(dat$x) - lag)], y1 = dat$y[1:(length(dat$x) - lag)],
             col = "blue", alpha = 0.5, length = 0.1)
+    }
+    if (input$comp) {
+      arrows(x1 = dat$x[(1+lag):length(dat$x)], x0 = dat$x[(1+lag):length(dat$x)],
+             y0 = dat$y[1:(length(dat$x) - lag)], y1 = dat$y[(1+lag):length(dat$x)],
+             col = "blue", alpha = 0.5, length = 0, lty = 15)
     }
     
   })
@@ -89,7 +94,7 @@ shinyServer(function(input, output, session) {
     lag <- input$lag
     par(col.sub = 2)
     plot(dat$y[1:(length(dat$x) - lag)], dat$y[(1+lag):length(dat$x)], pch = 16,
-         ylab = "y", xlab = "y shifted by lag", xaxt = "n",
+         ylab = "y", xlab = "y shifted by lag", xaxt = "n", col = 4,
          sub = paste0("Correlation = ",round(cor(dat$y[1:(length(dat$x) - lag)],
                                                  dat$y[(1+lag):length(dat$x)]), 4)))  
     axis(1, col = 2, col.ticks = 2, col.axis = 2)

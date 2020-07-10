@@ -1,5 +1,4 @@
 library("rhandsontable")
-library("plotly")
 
 
 shinyUI(fluidPage(
@@ -11,6 +10,7 @@ shinyUI(fluidPage(
       
       rHandsontableOutput("hot"),
       checkboxInput("arrow", "show shift", FALSE),
+      checkboxInput("comp", "show data pairs", FALSE),
       h4("Lag"),
       sliderInput("lag", "Autocorrelcation lag", min = 0, max = 15, value = 0),
       h4("Actions"),
