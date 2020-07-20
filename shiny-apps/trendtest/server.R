@@ -13,13 +13,12 @@ lastAddRows  <- 0
 lastInputRun <- 0
 
 ## DF structure and example data
-DF <- data.frame(x = c(paste0("200", 0:9, "-01-01"), paste0("20", 10:15, "-01-01")),
-                 y = 9 + 0:15*0.04 + rnorm(16,0, 0.5)
-                 )
+DF <- data.frame(
+  x = c(paste0("200", 0:9, "-01-01"), paste0("20", 10:15, "-01-01")),
+  y = 9 + 0:15 * 0.04 + rnorm(16, 0, 0.5)
+)
 
 shinyServer(function(input, output, session) {
-
-
 
   output$hot <- renderRHandsontable({
 
@@ -57,7 +56,7 @@ shinyServer(function(input, output, session) {
       hot_table(highlightCol = TRUE, highlightRow = TRUE)
   })
 
-  
+
   get_DF <- reactive({
     DF <- hot_to_r(input$hot)
     DF <- na.exclude(DF)
@@ -73,7 +72,7 @@ shinyServer(function(input, output, session) {
     }
     DF$mode <- "Obs"
     DF$tile <- "1 - Time series"
-    
+
     if(input$smooth == "lm") {
       lm <- lm(y ~ x, DF)
     } else if(input$smooth == "loess"){
@@ -84,17 +83,17 @@ shinyServer(function(input, output, session) {
       } else {
         lm <- loess(y ~ x, DF)
       }
-    } 
-    
-    
+    }
+
+
     DF <- rbind(DF, data.frame(x = DF$x,
                                y = residuals(lm),
                                mode = rep("res", length(DF$x)),
                                tile = rep("2 - Residuals", length(DF$x))))
-    
+
     return(DF)
   })
-  
+
   output$temp_ts <- renderPlotly({
     input$runBtn
     isolate({
@@ -115,7 +114,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  
   output$acf <- renderPlotly({
     input$runBtn
     isolate({
@@ -125,27 +123,27 @@ shinyServer(function(input, output, session) {
         AC <- acf(DF$y[DF$mode == "res"], plot = FALSE)
         conf.level <- 0.95
         ciline <- qnorm((1 - conf.level)/2)/sqrt(length(DF$y))
-      p2 <- ggplot(data.frame(acf = AC$acf,
+        p2 <- ggplot(data.frame(acf = AC$acf,
                               lag = AC$lag), aes(x = lag, y = acf)) +
         geom_hline(aes(yintercept = 0)) +
-        geom_segment(mapping = aes(xend = lag, yend = 0)) + 
+        geom_segment(mapping = aes(xend = lag, yend = 0)) +
         geom_hline(aes(yintercept = ciline), linetype = 2, color = 'darkblue') +
         geom_hline(aes(yintercept = -ciline), linetype = 2, color = 'darkblue') +
-        ggtitle("Autocorelation residuals")
-      ggplotly(p2)
+        ggtitle("Autocorelation of residuals")
+        ggplotly(p2)
       } else {
         NULL # return NULL if input$hot is not yet initialized
       }
     })
   })
-  
-  
+
+
   output$resdist <- renderPlotly({
     input$runBtn
     isolate({
       if (!is.null(input$hot)) {
         DF <- get_DF()
-        
+
         dist <- data.frame(x = seq(min(DF$y[DF$mode == "res"]),
                                    max(DF$y[DF$mode == "res"]),
                                    length.out = 200),
@@ -156,21 +154,21 @@ shinyServer(function(input, output, session) {
                                      sd(DF$y[DF$mode == "res"])))
 
         p <- ggplot(DF[DF$mode == "res", ], aes(x = y)) +
-          geom_histogram(aes(y = ..density..), bins = round(length(DF$x[DF$mode == "Obs"])/3),
-                         fill = "bisque3", col = "darkgrey") + 
-          geom_density(aes(y=..density..), col = "blue4", lwd = 1.2) + 
-          geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed", lwd = 1.2) +
-          xlab("Residuals") + ggtitle("Distribution residuals")
+        geom_histogram(aes(y = ..density..), bins = round(length(DF$x[DF$mode == "Obs"])/3),
+                       fill = "bisque3", col = "darkgrey") +
+        geom_density(aes(y=..density..), col = "blue4") +
+        geom_line(data = dist, aes(x, y), col = "green4", lty = "dashed") +
+        xlab("Residuals") + ggtitle("Distribution of residuals")
         ggplotly(p)
       } else {
         NULL # return NULL if input$hot is not yet initialized
       }
     })
   })
-  
-  
+
+
   sumTable <-  reactive({
-    
+
     DF <- get_DF()
     if(is.numeric(DF$x)) {
       ts <- xts(DF$y[DF$mode == "Obs"], as.POSIXct(DF$x[DF$mode == "Obs"],
@@ -178,21 +176,23 @@ shinyServer(function(input, output, session) {
     } else {
       ts <- xts(DF$y[DF$mode == "Obs"], DF$x[DF$mode == "Obs"])
     }
-    
-    
+
     ken <- MannKendall(ts)
     lm <- lm(y ~ x, DF[DF$mode == "Obs", ])
-    
-    setNames(data.frame(c("Linear trend",
-                          "Mann Kendall test"),
+
+    print(summary(lm))
+
+    setNames(data.frame(c("Linear trend", "Mann Kendall test"),
                         c("Slope", "Tau"),
-                        c(lm$coefficients[2]*ifelse(is.numeric(DF$x), 1, (365.25*24*3600)),
+                        c(lm$coefficients[2] *
+                            ifelse(is.numeric(DF$x), 1, (365.25*24*3600)),
                           ken$tau[1]),
-                        c(summary(lm)$coefficients[2,4], ken$sl[1])),
-             c("Method", "Measure","Value", "p.value"))
-  
+                        c(summary(lm)$coefficients[2, 2] *
+                            ifelse(is.numeric(DF$x), 1, (365.25*24*3600)), NA),
+                        c(summary(lm)$coefficients[2, 4], ken$sl[1])),
+             c("Method", "Measure","Value", "Std. err", "p-value"))
   })
-  
+
   output$sumTable <- renderTable({
     input$runBtn
     isolate({
@@ -201,6 +201,6 @@ shinyServer(function(input, output, session) {
       } else {
         NULL
       }
-     })}, digits = 4)
-  
+     }
+  )}, digits = 4)
 })

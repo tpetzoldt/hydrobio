@@ -19,7 +19,6 @@ shinyUI(fluidPage(
       actionButton("addRows", "+10 rows"),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")
-
     ),
     mainPanel(
       tabsetPanel(
