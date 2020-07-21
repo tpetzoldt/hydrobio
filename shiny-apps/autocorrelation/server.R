@@ -107,7 +107,7 @@ shinyServer(function(input, output, session) {
         plot(x, aco, 'l', xaxt = "n", yaxt = "n", col ="green3", lwd = 2,
              ylim = c(-1, 1), xlab = "", ylab = "")
         axis(4, col = 3, col.ticks = 3, col.axis = 3)
-        abline(h = 0, lwd = 2, col = 3)
+        abline(h = 0, lwd = 1, col = 3, lty = 17)
         arrows(x1 = dat$x[(1+lag):length(dat$x)], x0 = dat$x[(1+lag):length(dat$x)],
                y0 = 0, y1 = (y - mean(dat$y))*(yl - mean(dat$y))/sum((dat$y - mean(dat$y))^2) * scl,
                col = 3, length = 0.1, lwd = 2)
