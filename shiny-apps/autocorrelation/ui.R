@@ -10,8 +10,10 @@ shinyUI(fluidPage(
 
       rHandsontableOutput("hot"),
       checkboxInput("arrow", "show shift", FALSE),
+      checkboxInput("comp", "show pairs", FALSE),
+      checkboxInput("cor", "show correlation", FALSE),
       h4("Lag"),
-      sliderInput("lag", "Autocorrelation lag", min = 0, max = 15, value = 0),
+      sliderInput("lag", "Autocorrelcation lag", min = 0, max = 15, value = 0),
       h4("Actions"),
       actionButton("addRows", "+10 rows"),
       actionButton("clrBtn", "Clear")
