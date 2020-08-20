@@ -14,6 +14,8 @@ shinyUI(fluidPage(
       checkboxInput("cor", "show correlation", FALSE),
       h4("Lag"),
       sliderInput("lag", "Autocorrelcation lag", min = 0, max = 15, value = 0),
+      h4("Add random noise"),
+      sliderInput("noise", "Standard deviation of noise relative to range of y", min = 0, max = 2, step = 0.01, value = 0),
       h4("Actions"),
       actionButton("addRows", "+10 rows"),
       actionButton("clrBtn", "Clear")
