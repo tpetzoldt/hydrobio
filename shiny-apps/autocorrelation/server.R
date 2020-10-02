@@ -64,7 +64,8 @@ shinyServer(function(input, output, session) {
     } else {
       DF$x <- as.numeric(DF$x)
     }
-
+    noise <- rnorm(n = length(DF$y), mean = 0, sd = input$noise * diff(range(DF$y)))
+    DF$y <- DF$y + noise
     return(DF)
   })
 
