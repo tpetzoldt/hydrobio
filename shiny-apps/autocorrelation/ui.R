@@ -2,21 +2,23 @@ library("rhandsontable")
 
 
 shinyUI(fluidPage(
+  HTML('<span lang = "en">'), # worakround; improve this when shiny supports global lang tag
+  includeHTML("www/header_ihb_en.html"),
   headerPanel("Autocorrelation"),
   sidebarLayout(
     sidebarPanel(
 
-      h3("Input data"),
+      h1("Input data"),
 
       rHandsontableOutput("hot"),
       checkboxInput("arrow", "show shift", FALSE),
       checkboxInput("comp", "show pairs", FALSE),
       checkboxInput("cor", "show correlation", FALSE),
-      h4("Lag"),
+      h2("Lag"),
       sliderInput("lag", "Autocorrelcation lag", min = 0, max = 15, value = 0),
-      h4("Add random noise"),
+      h2("Add random noise"),
       sliderInput("noise", "Standard deviation of noise relative to range of y", min = 0, max = 2, step = 0.01, value = 0),
-      h4("Actions"),
+      h2("Actions"),
       actionButton("addRows", "+10 rows"),
       actionButton("clrBtn", "Clear")
 
@@ -34,6 +36,8 @@ shinyUI(fluidPage(
         )
         )
       )
-    )
+    ),
+  includeHTML("www/footer_en.html"), # <---
+  HTML("</span>")
   )
 )

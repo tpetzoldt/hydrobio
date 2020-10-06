@@ -207,13 +207,13 @@ window.initializeCodeFolding = function(show) {
   var currentIndex = 1;
 
   // select all R code blocks
-  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia');
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
-      div.addClass('in');
+    show = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    if (show) div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
     $(this).before(div);
@@ -437,15 +437,15 @@ summary {
 </div>
 
 
-<div id="scientific-background" class="section level2">
-<h2>Scientific background</h2>
-<div id="thermocline-and-10-degrees-celsius-isotherme" class="section level3">
-<h3>Thermocline and 10 degrees Celsius isotherme</h3>
+<div id="scientific-background" class="section level1">
+<h1>Scientific background</h1>
+<div id="thermocline-and-10-degrees-celsius-isotherme" class="section level2">
+<h2>Thermocline and 10 degrees Celsius isotherme</h2>
 <p>The thermocline in the plots is calculated using the <strong>R</strong> package <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a>. Different definitions and calculation methods exist for mixing depth (<span class="math inline">\(z_{mix}\)</span>) and thermocline, see for example the references in the rLakeAnalyzer <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">documentation</a> (Winslow et al. 2019) As a simple rule of thumb, mixing depth can be estimated as the first depth where the temperature gradient is more than one degree per meter (1K/m). The app uses the rLakeAnalyzer algorithm, to understand what it does is left as an exercise (see below).</p>
 <p>Both mixing depth and thermocline are somewhat complex. In reality, hydrophysical gradients are continuous and change dynamically. “Fixed boundaries” do not really exist, but they are good indicators and helpful for further computations. Another practical indicator is the “10 degrees Celsius isotherme”, that is even simpler and less influenced by complex interactions.</p>
 </div>
-<div id="oxygen-saturation" class="section level3">
-<h3>Oxygen saturation</h3>
+<div id="oxygen-saturation" class="section level2">
+<h2>Oxygen saturation</h2>
 <p>Oxygen saturation is given by the ratio of the actual oxygen concentration and the oxygen saturation concentration at the given temperature. The saturation concentration can be approximated as a function of water temperature and barometric pressure using the equation of Mortimer (1981):</p>
 <p><span class="math display">\[
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
@@ -453,8 +453,8 @@ C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\rig
 \]</span></p>
 <p>where <span class="math inline">\(T\)</span> is the temperature in degrees Celsius, and <span class="math inline">\(p\)</span> is the air pressure in hectopascal. The resulting saturation concentration is in units of gO/m<span class="math inline">\(^3\)</span> or mgO/l.</p>
 </div>
-<div id="underwater-light-profile-and-euphotic-zone" class="section level3">
-<h3>Underwater light profile and euphotic zone</h3>
+<div id="underwater-light-profile-and-euphotic-zone" class="section level2">
+<h2>Underwater light profile and euphotic zone</h2>
 <p>The underwater light <span class="math inline">\(I_z\)</span> (<span class="math inline">\(I=\)</span> irradiation) in a particular depth <span class="math inline">\(z\)</span> can be estimated from the light intensity immediately below the water surface <span class="math inline">\(I_0\)</span> using Lambert-Beer’s law:</p>
 <p><span class="math display">\[
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
@@ -474,8 +474,8 @@ I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 y = a  - b \cdot x
 \]</span></p>
 </div>
-<div id="limnological-interactions-between-light-temperature-oxygen-ph-and-conductivity" class="section level3">
-<h3>Limnological interactions between light, temperature, oxygen pH and conductivity</h3>
+<div id="limnological-interactions-between-light-temperature-oxygen-ph-and-conductivity" class="section level2">
+<h2>Limnological interactions between light, temperature, oxygen pH and conductivity</h2>
 <p>In aquatic ecosystems, hydrophysical, chemical and biological variables are influenced by hydrology, meteorology and seasonal forcing and influence each other. As a comprehensive description would exceed the space here, we refer to the hydrobiology lecture and the textbooks.</p>
 <p>You may consider the following keywords and questions:</p>
 <ul>
@@ -489,8 +489,8 @@ y = a  - b \cdot x
 </ul>
 </div>
 </div>
-<div id="exercises" class="section level2">
-<h2>Exercises</h2>
+<div id="exercises" class="section level1">
+<h1>Exercises</h1>
 <ul>
 <li>Download data from the course home page and compare temperature and light profiles. Search the internet for background information about the particular Lakes and Reservoirs and discuss how the profile characteristics are related to the lakes. Can you find agreements and disagreements? Are they plausible or surprising?</li>
 <li>Compare the rLakeAnalyzer thermocline with the 1K/m rule.</li>
@@ -498,8 +498,8 @@ y = a  - b \cdot x
 <li>Compare the extinction coefficients with data from a limnology textbook e.g., Lampert and Sommer (2007), Figure 3.4</li>
 </ul>
 </div>
-<div id="bonus-recreate-the-plots-in-r" class="section level2">
-<h2>(Bonus) Recreate the plots in R</h2>
+<div id="bonus-recreate-the-plots-in-r" class="section level1">
+<h1>(Bonus) Recreate the plots in R</h1>
 <p>Below, the source code to calculate the 10°C isotherme, thermocline depth and 1% light depth, and create the plots shown in this application is provided. It is not required to understand this or to be able to recreate the plots in R. Nevertheless, some skills using the statistical programming language R can be advantageous in your future (academic) career and there are lots of good resources to learn it online.</p>
 <pre class="r"><code># required libraries
 library(readxl)
@@ -626,8 +626,8 @@ p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
 # show the plot
 p4</code></pre>
 </div>
-<div id="references" class="section level2">
-<h2>References</h2>
+<div id="references" class="section level1">
+<h1>References</h1>
 <!-- Lampert Sommer, Wikipedia, R packages /-->
 <p>Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology of Lakes and Streams. Oxford university press.</p>
 <p>Mortimer, C. H. 1981. The oxygen content of air-saturated fresh waters over ranges of temperature and atmospheric presure of limnological interest. Mitteilungen Internationale Vereinigung für theoretische und angewandte Limnologie, 22:1–23.</p>

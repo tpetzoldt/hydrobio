@@ -5,16 +5,18 @@ library("rLakeAnalyzer")
 library("reshape2")
 
 shinyUI(fluidPage(
+  HTML('<span lang = "en">'), # worakround; improve this when shiny supports global lang tag
+  includeHTML("www/header_ihb_en.html"),
   headerPanel("Lake Profile Plot"),
   sidebarLayout(
     sidebarPanel(
 
-      h3("Input data"),
+      h1("Input data"),
 
       rHandsontableOutput("hot"),
-      h4("Measurement units"),
+      h2("Measurement units"),
       p("Depth: m, Temp: °C, pH: -, Conductivity: mS/m, Turb: NTU, Light: Iz/I0 (percent)"),
-      h4("Options"),
+      h2("Options"),
       checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
       checkboxInput("thermo", "plot thermocline", FALSE),
       checkboxInput("light1p", "plot 1% light depth", FALSE),
@@ -52,5 +54,7 @@ shinyUI(fluidPage(
         )
       )
     )
-  )
+  ),
+  includeHTML("www/footer_en.html"), # <---
+  HTML("</span>")
 ))
