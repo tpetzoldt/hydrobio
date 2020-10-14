@@ -9,9 +9,9 @@ bibliography: references.bib
 
 
 
-## Wissenschaftliche Grundlagen
+# Wissenschaftliche Grundlagen
 
-### Thermokline und 10 Grad Celsius-Isotherme
+## Thermokline und 10 Grad Celsius-Isotherme
 
 Für die Plots wird die Thermokline mit Hilfe des **R**-Pakets
 [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/)
@@ -35,7 +35,7 @@ Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch
 sehr nützlich.  Ein weiterer noch einfacherer pragmatischer Indikator
 ist die 10 Grad Celsius-Isotherme.
 
-### Sauerstoffsättigungskonzentration
+## Sauerstoffsättigungskonzentration
 
 Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen
 Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen
@@ -55,7 +55,7 @@ O/m$^3$ bzw. mg O/L.  Weitere Formeln und entsprechende
 Literaturangaben finden sich im R-Paket
 [marelac](https://CRAN.R-project.org/package=marelac).
 
-### Unterwasserlichtprofil und euphotische Zone
+## Unterwasserlichtprofil und euphotische Zone
 
 Die Unterwasser-Lichtintensität $I_z$ ($I=$ irradiation) in einer
 bestimmten Tiefe $z$ ergibt sich aus der Lichtintensität unmittelbar
@@ -93,7 +93,7 @@ entspricht  dem Extinktionskoeffizienten $\varepsilon$:
 y = a  - b \cdot x
 \]
 
-### Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit
+## Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit
 
 Die hydrophysikalischen, chemischen und biologischen Variablen
 aquatischer Ökosysteme werden durch meteorologische, hydrologische und
@@ -113,7 +113,7 @@ Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte
 * usw.
 
 
-## Übungsaufgaben
+# Übungsaufgaben
 
 * Laden sie sich die Daten von der Kurs-Homepage herunter und
   vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im
@@ -129,7 +129,7 @@ Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte
 * Vergleichen sie die Extinktionskoeffizienten mit Werten aus
   Lehrbüchern, z.B. Lampert and Sommer (2007), Abbildung 3.4
 
-## (Bonus) R-Scripte für die Vertikalprofile
+# (Bonus) R-Scripte für die Vertikalprofile
 
 Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme,
 der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R
@@ -270,7 +270,7 @@ p4
 ```
 
 
-## Literaturverzeichis
+# Literaturverzeichis
 
 <!-- Lampert Sommer, Wikipedia, R packages /-->
 

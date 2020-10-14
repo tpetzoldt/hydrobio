@@ -3,19 +3,21 @@ library("plotly")
 library("Kendall")
 
 shinyUI(fluidPage(
+  HTML('<span lang = "en">'), # worakround; improve this when shiny supports global lang tag
+  includeHTML("www/header_ihb_en.html"),
   headerPanel("Trend test"),
   sidebarLayout(
     sidebarPanel(
 
-      h3("Input data"),
+      h1("Input data"),
 
       rHandsontableOutput("hot"),
       radioButtons("smooth", label = c("select smoother"), selected = "lm",
                    choiceNames = list("linear", "loess"),
                    choiceValues = list("lm", "loess")),
-      h4("Input"),
+      h2("Input"),
       p("x can be either nummeric or a date as character in ISO 8601 format (YYYY-mm-dd)"),
-      h4("Actions"),
+      h2("Actions"),
       actionButton("addRows", "+10 rows"),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")
@@ -39,5 +41,7 @@ shinyUI(fluidPage(
         )
       )
     )
-  )
+  ),
+  includeHTML("www/footer_en.html"), # <---
+  HTML("</span>")
 ))

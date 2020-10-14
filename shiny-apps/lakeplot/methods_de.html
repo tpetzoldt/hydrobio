@@ -207,13 +207,13 @@ window.initializeCodeFolding = function(show) {
   var currentIndex = 1;
 
   // select all R code blocks
-  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia');
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
-      div.addClass('in');
+    show = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    if (show) div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
     $(this).before(div);
@@ -437,17 +437,17 @@ summary {
 </div>
 
 
-<div id="wissenschaftliche-grundlagen" class="section level2">
-<h2>Wissenschaftliche Grundlagen</h2>
-<div id="thermokline-und-10-grad-celsius-isotherme" class="section level3">
-<h3>Thermokline und 10 Grad Celsius-Isotherme</h3>
+<div id="wissenschaftliche-grundlagen" class="section level1">
+<h1>Wissenschaftliche Grundlagen</h1>
+<div id="thermokline-und-10-grad-celsius-isotherme" class="section level2">
+<h2>Thermokline und 10 Grad Celsius-Isotherme</h2>
 <p>Für die Plots wird die Thermokline mit Hilfe des <strong>R</strong>-Pakets <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/">rLakeAnalyzer</a> berechnet.</p>
 <p>Generell existieren für die Berechnung der Sprungsschicht (<span class="math inline">\(z_{mix}\)</span>) bzw. Thermokline unterschiedliche Definitionen und Berechnungsverfahren, siehe z.B. <a href="https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html">Winslow et al. 2019</a>.</p>
 <p>Als einfache Faustregel wird oft die Tiefe angegeben, bei der der Temperaturgradient mehr als 1 Grad pro Meter (1K/m) beträgt. Die vorliegende App nutzt den <strong>rLakeAnalyzer</strong>-Algorithmus, das Verständnis der Funktiosweise belassen wir als Aufgabe (siehe unten).</p>
 <p>In der Realität sind Durchmischungstiefe bzw. Thermokline physikalisch komplex gesteuert. Außerdem sind die physikalischen Gradienten (z.B. Temperatur, Dichte, Turbulenz) in der Realität kontinuierlich und ändern sich dynamisch. Feste Grenzen gibt es eigentlich nicht, als Indikatoren und als Werkzueg für weitere Berechnungen sind sie jedoch sehr nützlich. Ein weiterer noch einfacherer pragmatischer Indikator ist die 10 Grad Celsius-Isotherme.</p>
 </div>
-<div id="sauerstoffsättigungskonzentration" class="section level3">
-<h3>Sauerstoffsättigungskonzentration</h3>
+<div id="sauerstoffsättigungskonzentration" class="section level2">
+<h2>Sauerstoffsättigungskonzentration</h2>
 <p>Die Sauerstoffsättigung ist das Verhältlis zwischen der gemessenen Sauerstoffkonzentration (in mg/L bzw. mmol/L) und der theoretischen Konzentration von sauerstoffgesättigtem Wasser bei einem bestimmten Luftdruck und einer bestimmten Temperatur. Zur Abschätzung existieren verschiedene empirische Formeln, z.B. die recht einfache Formel von Mortimer (1981):</p>
 <p><span class="math display">\[
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
@@ -455,8 +455,8 @@ C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\rig
 \]</span></p>
 <p>mit Temperatur <span class="math inline">\(T\)</span> in Grad Celsius und Luftdruck <span class="math inline">\(p\)</span> in Hektopascal. Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g O/m<span class="math inline">\(^3\)</span> bzw. mg O/L. Weitere Formeln und entsprechende Literaturangaben finden sich im R-Paket <a href="https://CRAN.R-project.org/package=marelac">marelac</a>.</p>
 </div>
-<div id="unterwasserlichtprofil-und-euphotische-zone" class="section level3">
-<h3>Unterwasserlichtprofil und euphotische Zone</h3>
+<div id="unterwasserlichtprofil-und-euphotische-zone" class="section level2">
+<h2>Unterwasserlichtprofil und euphotische Zone</h2>
 <p>Die Unterwasser-Lichtintensität <span class="math inline">\(I_z\)</span> (<span class="math inline">\(I=\)</span> irradiation) in einer bestimmten Tiefe <span class="math inline">\(z\)</span> ergibt sich aus der Lichtintensität unmittelbar unter der Wasseroberfläche <span class="math inline">\(I_0\)</span> über das Lambert-Beer’sche Gesetz:</p>
 <p><span class="math display">\[
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
@@ -476,8 +476,8 @@ I_z = I_0 \cdot e^{-\varepsilon \cdot z}
 y = a  - b \cdot x
 \]</span></p>
 </div>
-<div id="limnologische-wechselwirkungen-zwischen-licht-temperatur-sauerstoff-und-leitfähigkeit" class="section level3">
-<h3>Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit</h3>
+<div id="limnologische-wechselwirkungen-zwischen-licht-temperatur-sauerstoff-und-leitfähigkeit" class="section level2">
+<h2>Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit</h2>
 <p>Die hydrophysikalischen, chemischen und biologischen Variablen aquatischer Ökosysteme werden durch meteorologische, hydrologische und andere saisonale Faktoren gesteuert und beeinflussen sich gegenseitig. Eine umfassende Beschreibung würde den Rahmen dieses Textes überschreiten, deshalb wird auf die Vorlesung und die Lehrbücher verwiesen.</p>
 <p>Als Anregung für Wiederholung und Selbststudium dienen die folgenden Stichworte und Fragen:</p>
 <ul>
@@ -491,8 +491,8 @@ y = a  - b \cdot x
 </ul>
 </div>
 </div>
-<div id="übungsaufgaben" class="section level2">
-<h2>Übungsaufgaben</h2>
+<div id="übungsaufgaben" class="section level1">
+<h1>Übungsaufgaben</h1>
 <ul>
 <li>Laden sie sich die Daten von der Kurs-Homepage herunter und vergleichen Sie die Temperatur- und Lichtprofile. Suchen Sie im Internet nach den Charakteristika der jeweiligen Seen bzw. Talsperren und diskutieren Sie den Zusammenhang zwischen beobachteten Profilen und den Seeneigenschaften. Gibt es Übereinstimmungen oder Widersprüche? Sind diese plausibel oder überraschend?</li>
 <li>Vergleichen Sie die vom rLakeAnalyzer abgeschätzten Werte der Thermokline mit der 1K/m-Regel</li>
@@ -500,8 +500,8 @@ y = a  - b \cdot x
 <li>Vergleichen sie die Extinktionskoeffizienten mit Werten aus Lehrbüchern, z.B. Lampert and Sommer (2007), Abbildung 3.4</li>
 </ul>
 </div>
-<div id="bonus-r-scripte-für-die-vertikalprofile" class="section level2">
-<h2>(Bonus) R-Scripte für die Vertikalprofile</h2>
+<div id="bonus-r-scripte-für-die-vertikalprofile" class="section level1">
+<h1>(Bonus) R-Scripte für die Vertikalprofile</h1>
 <p>Anbei finden Sie ein R-Script für die Berechnung der 10°C-Isotherme, der Thermokline und der 1%-Lichttiefe. Ein volles Verständnis von R oder einer anderen Skriptsprache ist kein Bestandteil dieser Übung. Andererseits können Kenntnisse in einer Datenanalysesprache wie R für Ihre zukünftige (akademische oder praktische) Karriere nützlich sein. Im Internet finden Sie zahlreiche gute Quellen für das Selbststudium.</p>
 <pre class="r"><code># required libraries
 library(readxl)
@@ -628,8 +628,8 @@ p4 &lt;- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
 # show the plot
 p4</code></pre>
 </div>
-<div id="literaturverzeichis" class="section level2">
-<h2>Literaturverzeichis</h2>
+<div id="literaturverzeichis" class="section level1">
+<h1>Literaturverzeichis</h1>
 <!-- Lampert Sommer, Wikipedia, R packages /-->
 <p>Lampert, Winfried, and Ulrich Sommer. 2007. Limnoecology: The Ecology of Lakes and Streams. Oxford university press.</p>
 <p>Mortimer, C. H. 1981. The oxygen content of air-saturated fresh waters over ranges of temperature and atmospheric presure of limnological interest. Mitteilungen Internationale Vereinigung für theoretische und angewandte Limnologie, 22:1–23.</p>

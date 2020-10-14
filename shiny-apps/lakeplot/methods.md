@@ -9,9 +9,9 @@ bibliography: references.bib
 
 
 
-## Scientific background
+# Scientific background
 
-### Thermocline and 10 degrees Celsius isotherme
+## Thermocline and 10 degrees Celsius isotherme
 
 The thermocline in the plots is calculated using the **R** package
 [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different
@@ -32,7 +32,7 @@ helpful for further computations.  Another practical indicator is the
 "10 degrees Celsius isotherme", that is even simpler and less
 influenced by complex interactions.
 
-### Oxygen saturation
+## Oxygen saturation
 
 Oxygen saturation is given by the ratio of the actual oxygen
 concentration and the oxygen saturation concentration at the given
@@ -49,7 +49,7 @@ where $T$ is the temperature in degrees Celsius, and $p$ is the air
 pressure in hectopascal. The resulting saturation concentration is in
 units of gO/m$^3$ or mgO/l.
 
-### Underwater light profile and euphotic zone
+## Underwater light profile and euphotic zone
 
 The underwater light $I_z$ ($I=$ irradiation) in a particular depth
 $z$ can be estimated from the light intensity immediately below the
@@ -85,7 +85,7 @@ that is equivalent to a linear regression, where the coefficient $b =
 y = a  - b \cdot x
 \]
 
-### Limnological interactions between light, temperature, oxygen pH and conductivity
+## Limnological interactions between light, temperature, oxygen pH and conductivity
 
 In aquatic ecosystems, hydrophysical, chemical and biological
 variables are influenced by hydrology, meteorology and seasonal
@@ -104,7 +104,7 @@ You may consider the following keywords and questions:
 * and more ...
 
 
-## Exercises
+# Exercises
 
 * Download data from the course home page and compare temperature and
   light profiles. Search the internet for background information about
@@ -117,7 +117,7 @@ You may consider the following keywords and questions:
 * Compare the extinction coefficients with data from a limnology
   textbook e.g., Lampert and Sommer (2007), Figure 3.4
 
-## (Bonus) Recreate the plots in R
+# (Bonus) Recreate the plots in R
 
 Below, the source code to calculate the 10°C isotherme, thermocline
 depth and 1% light depth, and create the plots shown in this
@@ -256,7 +256,7 @@ p4 <- ggplot(dat_p3, aes(x = Depth, y = value, col = variable)) +
 p4
 ```
 
-## References
+# References
 
 <!-- Lampert Sommer, Wikipedia, R packages /-->
 
