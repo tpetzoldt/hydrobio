@@ -20,7 +20,9 @@ shinyUI(fluidPage(
       checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
       checkboxInput("thermo", "plot thermocline", FALSE),
       checkboxInput("light1p", "plot 1% light depth", FALSE),
-
+      checkboxInput("plotST", "add Secchi depth to plot", FALSE),
+      conditionalPanel(condition = "input.plotST==true",
+                       numericInput("ST", "Secchi depth (m)", NA)),
       actionButton("addRows", "+10 rows"),
       actionButton("runBtn", "Plot"),
       actionButton("clrBtn", "Clear")

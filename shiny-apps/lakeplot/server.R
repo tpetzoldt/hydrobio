@@ -48,6 +48,8 @@ shinyServer(function(input, output, session) {
     return(z_iso10)
   })
 
+  get_ST <- reactive(input$ST)
+  
   get_thermo <- reactive({
     if(is.null(input$hot)) return(NA) # emergency exit during initialization
     DF <- hot_to_r(input$hot)
@@ -114,11 +116,12 @@ shinyServer(function(input, output, session) {
   output$multiprobe1 <- renderPlotly({
 
     input$runBtn
-
+    input$plotST
     input$thermo
     input$`10Ciso`
     input$light1p
-
+    ST <- get_ST()
+    
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -158,6 +161,15 @@ shinyServer(function(input, output, session) {
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
+        
+        if(input$plotST) {
+          datST <- aggregate(list(y = dfp1$value), by = list(plot = dfp1$plot), quantile, 0.1)
+          datST$x <- ST
+          datST$variable <- "Secchi depth"
+          p1 <- p1 + geom_segment(data = datST,
+                                  aes(x = 0, y = y, xend = x, yend = y, col = variable),
+                                  arrow = arrow(angle = 90, length = unit(0.2, "cm")))
+        }
         ggplotly(p1)
 
       } else {
@@ -169,10 +181,11 @@ shinyServer(function(input, output, session) {
   output$multiprobe2 <- renderPlotly({
 
     input$runBtn
-
+    input$plotST
     input$thermo
     input$`10Ciso`
     input$light1p
+    ST <- get_ST()
 
     isolate({
       if (!is.null(input$hot)) {
@@ -216,6 +229,15 @@ shinyServer(function(input, output, session) {
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
+        
+        if(input$plotST) {
+          datST <- aggregate(list(y = dfp1$value), by = list(plot = dfp1$plot), quantile, 0.1)
+          datST$x <- ST
+          datST$variable <- "Secchi depth"
+          p1 <- p1 + geom_segment(data = datST,
+                                  aes(x = 0, y = y, xend = x, yend = y, col = variable),
+                                  arrow = arrow(angle = 90, length = unit(0.2, "cm")))
+        }
         ggplotly(p1)
 
       } else {
@@ -229,7 +251,8 @@ shinyServer(function(input, output, session) {
     input$light1p
     input$thermo
     input$`10Ciso`
-
+    input$plotST
+    ST <- get_ST()
 
     isolate({
       if (!is.null(input$hot)) {
@@ -278,6 +301,14 @@ shinyServer(function(input, output, session) {
                                 aes(xintercept = x, col = variable), linetype = "dashed")
         }
 
+        if(input$plotST) {
+          datST <- aggregate(list(y = dfp1$value), by = list(plot = dfp1$variable), quantile, 0.1)
+          datST$x <- ST
+          datST$variable <- "Secchi depth"
+          p1 <- p1 + geom_segment(data = datST,
+                                  aes(x = 0, y = y, xend = x, yend = y, col = variable),
+                                  arrow = arrow(angle = 90, length = unit(0.2, "cm")))
+        }
 
         ggplotly(p1)
       } else {
@@ -292,6 +323,9 @@ shinyServer(function(input, output, session) {
     input$light1p
     input$thermo
     input$`10Ciso`
+    input$plotST
+    ST <- get_ST()
+    
     isolate({
       if (!is.null(input$hot)) {
         DF <- hot_to_r(input$hot)
@@ -354,6 +388,15 @@ shinyServer(function(input, output, session) {
 
           p1 <- p1 + geom_vline(data = data.frame(x = z_thermo, variable = "thermocline"),
                                 aes(xintercept = x, col = variable), linetype = "dashed")
+        }
+        
+        if(input$plotST) {
+          datST <- aggregate(list(y = dfp1$value), by = list(plot = dfp1$variable), quantile, 0.1)
+          datST$x <- ST
+          datST$variable <- "Secchi depth"
+          p1 <- p1 + geom_segment(data = datST,
+                                  aes(x = 0, y = y, xend = x, yend = y, col = variable),
+                                  arrow = arrow(angle = 90, length = unit(0.2, "cm")))
         }
 
         ggplotly(p1)
