@@ -15,7 +15,7 @@ shinyUI(fluidPage(
       checkboxInput("comp", "show pairs", FALSE),
       checkboxInput("cor", "show correlation", FALSE),
       h2("Lag"),
-      sliderInput("lag", "Autocorrelcation lag", min = 0, max = 15, value = 0),
+      sliderInput("lag", "Autocorrelation lag", min = 0, max = 15, value = 0),
       h2("Add random noise"),
       sliderInput("noise", "Standard deviation of noise relative to range of y", min = 0, max = 2, step = 0.01, value = 0),
       h2("Actions"),
