@@ -15,7 +15,8 @@ shinyUI(fluidPage(
 
       rHandsontableOutput("hot"),
       h2("Measurement units"),
-      p("Depth: m, Temp: °C, pH: -, Conductivity: mS/m, Turb: NTU, Light: Iz/I0 (percent)"),
+      p(paste0("Depth: m, Temp: °C, Oxygen: mg/L, pH: -, Conductivity: mS/m, ",
+               "Chlorophyl-a: mug/L, Turb: NTU, Light: Iz/I0 (percent)")),
       h2("Options"),
       checkboxInput("10Ciso", "plot 10°C isotherme", FALSE),
       checkboxInput("thermo", "plot thermocline", FALSE),
