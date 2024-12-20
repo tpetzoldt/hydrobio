@@ -15,7 +15,7 @@ bibliography: references.bib
 
 The thermocline in the plots is calculated using the **R** package
 [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/). Different
-definitions and calculation methods exist for mixing depth ($z_{mix}$)
+definitions and calculation methods exist for mixing depth ( $z_{mix}$ )
 and thermocline, see for example the references in the rLakeAnalyzer
 [documentation](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html)
 (Winslow et al. 2019)
@@ -40,10 +40,10 @@ temperature. The saturation concentration can be approximated as a
 function of water temperature and barometric pressure using the
 equation of Mortimer (1981):
 
-\[
+$$
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
 \frac{p}{1013.25}
-\]
+$$
 
 where $T$ is the temperature in degrees Celsius, and $p$ is the air
 pressure in hectopascal. The resulting saturation concentration is in
@@ -51,22 +51,22 @@ units of gO/m$^3$ or mgO/l.
 
 ## Underwater light profile and euphotic zone
 
-The underwater light $I_z$ ($I=$ irradiation) in a particular depth
+The underwater light $I_z$ ( $I=$ irradiation) in a particular depth
 $z$ can be estimated from the light intensity immediately below the
 water surface $I_0$ using Lambert-Beer's law:
 
-\[
+$$
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
-\]
+$$
 
 where it is assumed that the light extinction coefficient
-$\varepsilon$ (in some books also named $k_d$) is constant over
+$\varepsilon$ \(in some books also named $k_d$\) is constant over
 depth. This is of course an approximation for mainly two reasons:
 
 * light extinction depends on the light wavelength
 * color and particles are evenly distributed over depth
 
-The $\varepsilon$-value measured with an underwater light sensor is a
+The $\varepsilon$\-value measured with an underwater light sensor is a
 mean value over depth and over a certain spectral range (the visible
 light or the photosynthetic active part), so it can be called the
 "mean vertical and mean spectral extinction coefficient".
@@ -74,16 +74,16 @@ light or the photosynthetic active part), so it can be called the
 It can be directly calculated from Lambert-Beer's law by linear
 regresion of the log-transformed equation
 
-\[
+$$
 \ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
-\]
+$$
 
-that is equivalent to a linear regression, where the coefficient $b =
-\varepsilon$:
+that is equivalent to a linear regression, where the coefficient
+$b = \varepsilon$\:
 
-\[
+$$
 y = a  - b \cdot x
-\]
+$$
 
 ## Limnological interactions between light, temperature, oxygen pH and conductivity
 

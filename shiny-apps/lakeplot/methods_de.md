@@ -17,7 +17,7 @@ Für die Plots wird die Thermokline mit Hilfe des **R**-Pakets
 [rLakeAnalyzer](https://cran.r-project.org/web/packages/rLakeAnalyzer/)
 berechnet.
 
-Generell existieren für die Berechnung der Sprungsschicht ($z_{mix}$)
+Generell existieren für die Berechnung der Sprungsschicht ( $z_{mix}$ )
 bzw.  Thermokline unterschiedliche Definitionen und
 Berechnungsverfahren, siehe z.B.  [Winslow et
 al. 2019](https://cran.r-project.org/web/packages/rLakeAnalyzer/vignettes/sm_algorithm.html).
@@ -44,10 +44,10 @@ Luftdruck und einer bestimmten Temperatur.  Zur Abschätzung existieren
 verschiedene empirische Formeln, z.B. die recht einfache Formel von
 Mortimer (1981):
 
-\[
+$$
 C_{O2, sat} = \exp\left( 7.7117 − 1.31403 \cdot \log\left(T + 45.93\right)\right) \cdot
 \frac{p}{1013.25}
-\]
+$$
 
 mit Temperatur $T$ in Grad Celsius und Luftdruck $p$ in Hektopascal.
 Die Sättigungskonzentration nach dieser Formel hat die Maßeinheit g
@@ -57,13 +57,13 @@ Literaturangaben finden sich im R-Paket
 
 ## Unterwasserlichtprofil und euphotische Zone
 
-Die Unterwasser-Lichtintensität $I_z$ ($I=$ irradiation) in einer
+Die Unterwasser-Lichtintensität $I_z$ ( $I=$ irradiation) in einer
 bestimmten Tiefe $z$ ergibt sich aus der Lichtintensität unmittelbar
 unter der Wasseroberfläche $I_0$ über das Lambert-Beer'sche Gesetz:
 
-\[
+$$
 I_z = I_0 \cdot e^{-\varepsilon \cdot z}
-\]
+$$
 
 Hierbei wird angenommen, dass der Lichtextinktionskoeffizient
 $\varepsilon$ (in manchen Büchern $k_d$ genannt) über die Tiefe
@@ -73,7 +73,7 @@ konstant ist. Das ist aus mehreren Gründen eine Vereinfachung, weil:
 * Färbung und Partikel im Wasser nicht gleichmäßig verteilt sind.
 
 Aus diesem Grund ist der mit Hilfe eines Unterwasserlichtsensors
-gemessene $\varepsilon$-Wert ein Mittelwert über die Tiefe und über
+gemessene $\varepsilon$\-Wert ein Mittelwert über die Tiefe und über
 einen bestimmten Spektralbereich, z.B. das sichtbare Licht oder den
 photosynthetisch aktiven Bereich (photosynthetisch aktive Strahlung
 PAR). Man spricht deshalb vom "mittleren vertikalen und mittleren
@@ -82,16 +82,16 @@ spektralen Lichtextinktionskoeffizient".
 Der Koeffizient kann mit Hilfe der logarithmisch-transformierten Form
 des Lambert-Beerschen Gesetzes:
 
-\[
+$$
 \ln(I_z) = \ln(I_0)  -\varepsilon \cdot z
-\]
+$$
 
 bestimmt werden, analog einer linearen Regression. Die Steigung $b$ der Gerade 
-entspricht  dem Extinktionskoeffizienten $\varepsilon$:
+entspricht  dem Extinktionskoeffizienten $\varepsilon$\:
 
-\[
+$$
 y = a  - b \cdot x
-\]
+$$
 
 ## Limnologische Wechselwirkungen zwischen Licht, Temperatur, Sauerstoff und Leitfähigkeit
 
