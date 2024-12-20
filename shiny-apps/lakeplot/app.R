@@ -32,9 +32,10 @@ i18n$set_translation_language("en")
 ##--------------------------- ui ---------------------------------------
 
 ui <- fluidPage(
+  title='Lake Profile Plotter',
   shiny.i18n::usei18n(i18n),
   tags$div(
-    style='float: right;color: white; font-family: OpenSans;',
+    style='float: right;color: white; font-family: Open Sans;',
     selectInput(
       inputId='selected_language',
       label=i18n$t("Language"),
